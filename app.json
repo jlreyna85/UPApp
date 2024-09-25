@@ -1,0 +1,51 @@
+{
+  "expo": {
+    "name": "MiTu",
+    "slug": "MiTu",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/react-logo.png",
+    "scheme": "myapp",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./assets/images/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.firg28.MiTu",
+      "infoPlist": {
+        "NSCameraUsageDescription": "Esta aplicación necesita acceso a la cámara.",
+        "NSPhotoLibraryUsageDescription": "Esta aplicación necesita acceso a la galería de fotos."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/react-logo@2x.png",
+        "backgroundColor": "#ffffff"
+      },
+      "package": "com.firg28.MiTu",
+      "permissions": [
+        "CAMERA",
+        "WRITE_EXTERNAL_STORAGE"
+      ]
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "static",
+      "favicon": "./assets/images/react-logo@3x.png"
+    },
+    "plugins": [
+      "expo-router"
+    ],
+    "experiments": {
+      "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "5770f338-5e2c-4f34-9b51-f55c57d1a2d5"
+      }
+    }
+  }
+}
