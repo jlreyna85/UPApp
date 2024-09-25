@@ -5,15 +5,19 @@ interface CardViewProps {
   title: string;
   subtitle: string;
   imageUrl: string;
+  materia: string;
+  tutor: string;
+  usuario: string;
 }
 
-const CardView: React.FC<CardViewProps> = ({ title, subtitle, imageUrl }) => {
+const CardView: React.FC<CardViewProps> = ({ title, materia, tutor, usuario}) => {
   return (
     <View style={styles.card}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
       <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
+      {title ?<Text style={styles.title}>{title}</Text> : null}
+      {tutor?<Text style={styles.tutor}>Tutor: {tutor}</Text> : null}
+      {usuario  ?<Text style={styles.tutor}>Alumno: {usuario}</Text> : null}
+      {materia ?<Text style={styles.materia}>Materia: {materia}</Text> : null}
       </View>
     </View>
   );
@@ -41,16 +45,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#ffffff',
-    marginTop:-60,
     textAlign: 'center',
   },
   subtitle: {
     fontSize: 14,
     color: '#ffffff',
     textAlign: 'center',
+  },
+  materia: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginTop: 5,
+  },
+  tutor: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#ffffff',
+    textAlign: 'center',
+    marginTop: 5,
   },
 });
 
