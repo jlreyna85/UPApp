@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   card: {
-    backgroundColor: 'bluesky', // Color de fondo para depuración
+    backgroundColor: '#e0ffff', // Color de fondo para depuración
     padding: 10,
     margin: 10,
     borderRadius: 8,
