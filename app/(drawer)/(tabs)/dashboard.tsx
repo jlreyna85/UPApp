@@ -125,7 +125,6 @@ const styles = StyleSheet.create({
   },
   titleCareer: {
     alignItems: 'center',
-    marginTop: 10,
     gap: 8,
   },
   cardGrid: {
