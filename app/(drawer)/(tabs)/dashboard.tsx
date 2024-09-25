@@ -6,22 +6,21 @@ import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import CardView from '@/components/CardView';
-import { useUser } from '../../UserContext'; // Asegúrate de la ruta correcta
-import { doc, getDoc } from 'firebase/firestore'; // Firebase Firestore para obtener el documento del usuario
-import { db } from '../../../firebaseconfig'; // Asegúrate de que la ruta sea correcta
+import { useUser } from '../../UserContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { db } from '../../../firebaseconfig';
 import { RootStackParamList } from '@/app/types';
 
-// Define el tipo para los datos del usuario
 interface UserData {
-  cuatrimestre: string; // Cambiar a string ya que viene de Firestore
-  nombre?: string; // Añadir el nombre del usuario si lo quieres mostrar
-  carrera?: string; // Añadir la carrera del usuario
+  cuatrimestre: string;
+  nombre?: string;
+  carrera?: string;
 }
 
 export default function Dash() {
-  const [cuatrimestre, setCuatrimestre] = useState<number>(0); // Cambiado a número
+  const [cuatrimestre, setCuatrimestre] = useState<number>(0);
   const [carrera, setCarrera] = useState<string>(''); 
-  const [userName, setUserName] = useState<string>(''); // Estado para el nombre del usuario
+  const [userName, setUserName] = useState<string>('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { uid } = useUser();
 
@@ -29,7 +28,6 @@ export default function Dash() {
     const loadUserData = async () => {
       if (uid) {
         try {
-          // Referencias a documentos en ambas colecciones
           const userDocRefUsuarios = doc(db, 'usuarios', uid);
           const userDocRefDocentes = doc(db, 'docentes', uid);
 
@@ -40,13 +38,13 @@ export default function Dash() {
 
           if (userDocUsuarios.exists()) {
             const userData = userDocUsuarios.data() as UserData;
-            const cuatrimestreNumber = parseInt(userData.cuatrimestre, 10) || 0; // Convertir a número
+            const cuatrimestreNumber = parseInt(userData.cuatrimestre, 10) || 0;
             setCuatrimestre(cuatrimestreNumber);
-            setUserName(userData.nombre || ''); // Establecer el nombre del usuario
-            setCarrera(userData.carrera || ''); // Establecer la carrera del usuario
-          } else if(userDocDocentes.exists()){
+            setUserName(userData.nombre || '');
+            setCarrera(userData.carrera || '');
+          } else if (userDocDocentes.exists()) {
             const userData = userDocDocentes.data() as UserData;
-            setUserName(userData.nombre || ''); // Establecer el nombre del usuario
+            setUserName(userData.nombre || '');
             console.log('No se encontraron datos de usuario.');
           }
         } catch (error) {
@@ -58,10 +56,13 @@ export default function Dash() {
     };
 
     loadUserData();
-  }, [uid]); // Asegúrate de que se ejecute cada vez que `uid` cambie
+  }, [uid]);
 
   const handleCardPress = (cuatrimestre: number) => {
-    navigation.navigate('class_sistema');
+    navigation.navigate('class_sistema', {
+      cuatrimestreSeleccionado: cuatrimestre.toString(),
+      carrera: carrera,
+    });
     console.log("Es el cuatrimestre:", cuatrimestre);
   };
 
@@ -77,32 +78,33 @@ export default function Dash() {
       style={styles.background}
       resizeMode="cover"
     >
-    <ParallaxScrollView 
-    headerBackgroundColor={{ light: '#00CCB1', dark: 'rgb(21,23,24)' }} 
-    headerImage={<Image style={styles.headerImage} source={require('@/assets/images/lince.png')} />}>
-      <ThemedView style={styles.titleCareer}>
-        <ThemedText type="title">{carrera}</ThemedText>
-      </ThemedView>
+      <ParallaxScrollView 
+        headerBackgroundColor={{ light: '#00CCB1', dark: 'rgb(21,23,24)' }} 
+        headerImage={<Image style={styles.headerImage} source={require('@/assets/images/lince.png')} />}
+      >
+        <ThemedView style={styles.titleCareer}>
+          <ThemedText type="title">{carrera}</ThemedText>
+        </ThemedView>
 
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">¡Bienvenido, {userName}!</ThemedText>
-        <HelloWave />
-      </ThemedView>
+        <ThemedView style={styles.titleContainer}>
+          <ThemedText type="title">¡Bienvenido, {userName}!</ThemedText>
+          <HelloWave />
+        </ThemedView>
 
-      <ThemedView style={styles.cardGrid}>
-        {cuatrimestre > 0 ? (
-          <FlatList
-            data={[...Array(cuatrimestre).keys()].map(i => i + 1)}
-            renderItem={renderCuatrimestreCard}
-            keyExtractor={(item) => item.toString()}
-            numColumns={1}
-            contentContainerStyle={styles.cardGrid}
-          />
-        ) : (
-          <ThemedText>No hay cuatrimestres disponibles.</ThemedText>
-        )}
-      </ThemedView>
-    </ParallaxScrollView>
+        <ThemedView style={styles.cardGrid}>
+          {cuatrimestre > 0 ? (
+            <FlatList
+              data={[...Array(cuatrimestre).keys()].map(i => i + 1)}
+              renderItem={renderCuatrimestreCard}
+              keyExtractor={(item) => item.toString()}
+              numColumns={1}
+              contentContainerStyle={styles.cardGrid}
+            />
+          ) : (
+            <ThemedText>No hay cuatrimestres disponibles.</ThemedText>
+          )}
+        </ThemedView>
+      </ParallaxScrollView>
     </ImageBackground>
   );
 }
