@@ -1,54 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, FlatList } from 'react-native';
-import { useNavigation, useRoute, NavigationProp } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseconfig';
-import { RootStackParamList } from './types';
-
-interface RouteParams {
-  cuatrimestreSeleccionado: string;
-  carreraSeleccionada: string;
-}
 
 const ClassSistema = () => {
   const [nombresMaterias, setNombresMaterias] = useState<string[]>([]);
   const route = useRoute();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const navigation = useNavigation();
 
-  const { cuatrimestreSeleccionado = '1', carreraSeleccionada = 'Ingenieria en Sistemas Computacionales' } = route.params as RouteParams || {};
+  const { cuatrimestreSeleccionado, carrera } = route.params || {};
   const cuatrimestreNumber = parseInt(cuatrimestreSeleccionado, 10);
 
-  // Función para convertir carrera usando switch
-  const convertirCarrera = (carrera: string): string => {
-    switch (carrera.toLowerCase().trim()) {
-      case 'Ingenieria en Sistemas Computacionales':
-        return 'sistemas';
-      case 'licenciatura en comercio internacional y aduanas':
-        return 'comercio';
-      case 'ingeniería en diseño industrial':
-        return 'diseño';
-      case 'ingeniería en mecatronica':
-        return 'mecatronica';
-      case 'ingeniería financiera':
-        return 'financiera';
-      case 'ingeniería en aeronautica':
-        return 'aeronautica';
-      default:
-        return carrera; // Si no coincide, devolver la carrera original
-    }
-  };
-
-  const carreraAbreviada = convertirCarrera(carreraSeleccionada);
-  console.log(carreraAbreviada);
-  console.log(carreraSeleccionada);
+  console.log("carrera:", carrera);
 
   useEffect(() => {
-    cargarDatosDocentes(cuatrimestreNumber, carreraAbreviada);
-  }, [cuatrimestreNumber, carreraAbreviada]);
+    cargarDatosDocentes(cuatrimestreNumber, carrera);
+  }, [cuatrimestreNumber, carrera]);
 
   const cargarDatosDocentes = async (cuatrimestreSeleccionado: number, carrera: string) => {
     try {
-      // Buscar el documento de la carrera
       const carreraQuery = query(collection(db, 'carrera'), where('carrera', '==', carrera));
       const querySnapshot = await getDocs(carreraQuery);
 
@@ -100,16 +71,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor:'rgb(21,23,24)',
+    backgroundColor: 'rgb(21,23,24)',
   },
   card: {
-    width:300,
+    width: 450,
     backgroundColor: '#4dd0e1',
     padding: 20,
     marginBottom: 15,
     borderRadius: 10,
-    alignSelf:"center",
-    
+    alignSelf: "center",
   },
   cardTitle: {
     color: '#fff',
