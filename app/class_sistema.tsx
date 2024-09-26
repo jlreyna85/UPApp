@@ -4,6 +4,15 @@ import { useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDocs, doc, getDoc } from 'firebase/firestore';
 import { db } from '../firebaseconfig';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 const ClassSistema = () => {
   const [nombresMaterias, setNombresMaterias] = useState<string[]>([]);
   const route = useRoute();
@@ -71,11 +80,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: 'rgb(21,23,24)',
+    backgroundColor: colors.background,
   },
   card: {
-    width: 450,
-    backgroundColor: '#4dd0e1',
+    width: 300,
+    backgroundColor: colors.primary, // Usar color primario
     padding: 20,
     marginBottom: 15,
     borderRadius: 10,
