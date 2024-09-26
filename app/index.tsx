@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image, ImageBackground } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';  // Importa el ícono de la librería
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { auth, db } from '../firebaseconfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
@@ -12,8 +12,17 @@ export default function HomeScreen() {
   const { setUid } = useUser();
   const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState<string>('');
-  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);  // Controla si la contraseña es visible
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const colors = {
+    primary: '#4A90E2', // Azul claro
+    secondary: '#A8E6CF', // Verde suave
+    accent: '#FFA726', // Naranja
+    background: '#F5F5F5', // Gris claro
+    text: '#424242', // Gris oscuro
+    link: '#007AFF', // Azul para enlaces
+  };
 
   const handleLogin = async () => {
     if (email === '' || password === '') {
@@ -61,20 +70,15 @@ export default function HomeScreen() {
   };
 
   return (
-    <ImageBackground
-      source={{ uri: 'assets/images/fondo-textura-papel-blanco.jpg' }}
-      style={styles.background}
-      resizeMode="cover"
-    >
+    <View style={styles.container(colors)}>
       <Image
-          source={{ uri: 'assets/images/lince.png' }}
-          style={styles.logo}
-        />
-        <Text style={styles.title}>Bienvenido a UPApp</Text>
-      <View style={styles.container}>
-        <View style={styles.container2}>
+        source={{ uri: 'assets/images/react-logo.png' }}
+        style={styles.logo}
+      />
+      <Text style={styles.title(colors)}>Bienvenido a UPApp</Text>
+      <View style={styles.container2}>
         <TextInput
-          style={styles.input}
+          style={styles.input(colors)}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
@@ -82,22 +86,21 @@ export default function HomeScreen() {
           placeholderTextColor="#888"
         />
 
-        {/* Contenedor de la contraseña con el ícono del ojo */}
-        <View style={styles.passwordContainer}>
+        <View style={styles.passwordContainer(colors)}>
           <TextInput
             style={styles.inputPassword}
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
-            secureTextEntry={!passwordVisible}  // Cambia la visibilidad según el estado
+            secureTextEntry={!passwordVisible}
             placeholderTextColor="#888"
           />
           <TouchableOpacity
-            onPress={() => setPasswordVisible(!passwordVisible)}  // Cambia la visibilidad al presionar el ícono
+            onPress={() => setPasswordVisible(!passwordVisible)}
             style={styles.eyeIcon}
           >
             <Icon
-              name={passwordVisible ? 'eye-off' : 'eye'}  // Cambia el ícono de "ojo" según el estado
+              name={passwordVisible ? 'eye-off' : 'eye'}
               size={24}
               color="#888"
             />
@@ -105,53 +108,51 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity onPress={handleForgotPasswordPress}>
-          <Text style={styles.forgotPasswordText}>Has olvidado tu contraseña?</Text>
+          <Text style={styles.forgotPasswordText(colors)}>Has olvidado tu contraseña?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton(colors)} onPress={handleLogin}>
           <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
         </TouchableOpacity>
 
         <View style={styles.footerContainer}>
           <Text>No tienes cuenta?</Text>
           <TouchableOpacity onPress={handleSignupPress}>
-            <Text style={styles.signupText}>Registrate Aqui</Text>
+            <Text style={styles.signupText(colors)}>Registrate Aqui</Text>
           </TouchableOpacity>
         </View>
-        </View>
       </View>
-    </ImageBackground>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-  },
-  container: {
+  container: (colors) => ({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 0,
-  },
+    backgroundColor: colors.background,
+  }),
   container2: {
     justifyContent: 'center',
     paddingHorizontal: 50,
   },
   logo: {
-    width: 150,
-    height: 150,
-    alignSelf: 'flex-end',
+    width: 100,
+    height: 100,
+    alignSelf: 'center',
     tintColor: 'black',
   },
-  title: {
+  title: (colors) => ({
     fontSize: 36,
     fontWeight: 'bold',
     marginBottom: 20,
     textAlign: 'center',
-  },
-  input: {
+    color: colors.text,
+  }),
+  input: (colors) => ({
     height: 50,
-    borderColor: '#ccc',
+    borderColor: colors.primary,
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
@@ -162,11 +163,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-  },
-  passwordContainer: {
+  }),
+  passwordContainer: (colors) => ({
     flexDirection: 'row',
     alignItems: 'center',
-    borderColor: '#ccc',
+    borderColor: colors.primary,
     borderWidth: 1,
     borderRadius: 10,
     paddingHorizontal: 15,
@@ -177,26 +178,26 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 5,
     marginBottom: 20,
-  },
+  }),
   inputPassword: {
-    flex: 1,  // Ocupa el resto del espacio
+    flex: 1,
     height: 50,
   },
   eyeIcon: {
-    marginLeft: 10,  // Espacio entre el ícono y el borde del TextInput
+    marginLeft: 10,
   },
-  forgotPasswordText: {
-    color: '#007AFF',
+  forgotPasswordText: (colors) => ({
+    color: colors.link,
     fontWeight: 'bold',
     marginTop: -10,
-  },
-  loginButton: {
-    backgroundColor: '#007AFF',
+  }),
+  loginButton: (colors) => ({
+    backgroundColor: colors.primary,
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginVertical: 10,
-  },
+  }),
   loginButtonText: {
     color: '#fff',
     fontWeight: 'bold',
@@ -208,8 +209,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 5,
   },
-  signupText: {
-    color: '#007AFF',
+  signupText: (colors) => ({
+    color: colors.link,
     fontWeight: 'bold',
-  },
+  }),
 });
