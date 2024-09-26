@@ -6,6 +6,15 @@ import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { RootStackParamList } from './types';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 export default function Registro() {
   const [isTutor, setIsTutor] = useState<boolean>(false);
   const [username, setUsername] = useState<string>('');
@@ -25,15 +34,6 @@ export default function Registro() {
   const [filteredMaterias, setFilteredMaterias] = useState<string[]>([]);
 
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const colors = {
-    primary: '#4A90E2', // Azul claro
-    secondary: '#A8E6CF', // Verde suave
-    accent: '#FFA726', // Naranja
-    background: '#F5F5F5', // Gris claro
-    text: '#424242', // Gris oscuro
-    link: '#007AFF', // Azul para enlaces
-  };
 
   useEffect(() => {
     loadCuatrimestres();
@@ -72,6 +72,7 @@ export default function Registro() {
           
           for (const key in materiasData) {
             const materias = materiasData[key].toString().split(',');
+            
             if ((carreraFilter ? document.data().carrera === carreraFilter : true)) {
               materiasList.push(...materias);
             }
@@ -126,7 +127,7 @@ export default function Registro() {
       showAlert('Error', `Error al registrar usuario: ${error.message}`);
     }
   };
-
+  
   const showAlert = (title: string, message: string) => {
     Alert.alert(title, message, [{ text: 'OK' }]);
   };
@@ -154,44 +155,44 @@ export default function Registro() {
       resizeMode="cover"
     >
       <View style={styles.container}>
-        <Text style={styles.title(colors)}>Registro</Text>
+        <Text style={styles.title}>Registro</Text>
         <View style={styles.toggleContainer}>
-          <Text style={styles.toggleLabel(colors)}>Registrarse como:</Text>
+          <Text style={styles.toggleLabel}>Registrarse como:</Text>
           <Switch
             value={isTutor}
             onValueChange={handleToggleSwitch}
-            trackColor={{ false: '#767577', true: '#81b0ff' }}
-            thumbColor={isTutor ? '#f5dd4b' : '#f4f3f4'}
+            trackColor={{ true: colors.secondary, false: colors.accent }}
+            thumbColor={isTutor ? colors.primary : '#f4f3f4'}
           />
-          <Text style={styles.toggleText(colors)}>{isTutor ? 'Tutor' : 'Estudiante'}</Text>
+          <Text style={styles.toggleText}>{isTutor ? 'Tutor' : 'Estudiante'}</Text>
         </View>
         <TextInput
-          style={styles.input(colors)}
+          style={styles.input}
           placeholder="Nombre de usuario"
           value={username}
           onChangeText={setUsername}
         />
         <TextInput
-          style={styles.input(colors)}
+          style={styles.input}
           placeholder="Contraseña"
           secureTextEntry
           value={password}
           onChangeText={setPassword}
         />
         <TextInput
-          style={styles.input(colors)}
+          style={styles.input}
           placeholder="Nombre"
           value={name}
           onChangeText={setName}
         />
         <TextInput
-          style={styles.input(colors)}
+          style={styles.input}
           placeholder="Apellido"
           value={surname}
           onChangeText={setSurname}
         />
         <TextInput
-          style={styles.input(colors)}
+          style={styles.input}
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
@@ -199,11 +200,12 @@ export default function Registro() {
         {!isTutor && (
           <>
             <TextInput
-              style={styles.input(colors)}
+              style={styles.input}
               placeholder="Matrícula"
               value={matricula}
               onChangeText={setMatricula}
             />
+
             <Picker
               selectedValue={filterCarrera}
               style={styles.picker}
@@ -214,6 +216,7 @@ export default function Registro() {
                 <Picker.Item key={carrera} label={carrera} value={carrera} />
               ))}
             </Picker>
+
             <Picker
               selectedValue={cuatrimestre}
               style={styles.picker}
@@ -226,6 +229,7 @@ export default function Registro() {
             </Picker>
           </>
         )}
+
         {isTutor && (
           <>
             <Picker
@@ -241,6 +245,7 @@ export default function Registro() {
                 <Picker.Item key={carrera} label={carrera} value={carrera} />
               ))}
             </Picker>
+
             <Picker
               selectedValue=""
               style={styles.picker}
@@ -259,15 +264,17 @@ export default function Registro() {
                 <Picker.Item label="No hay materias disponibles" value="" />
               )}
             </Picker>
-            <Text style={styles.selectedSubjectsTitle(colors)}>Materias Seleccionadas:</Text>
+
+            <Text style={styles.selectedSubjectsTitle}>Materias Seleccionadas:</Text>
             {selectedSubjects.map((subject) => (
-              <Text key={subject} style={styles.selectedSubject(colors)}>
+              <Text key={subject} style={styles.selectedSubject}>
                 {subject}
               </Text>
             ))}
           </>
         )}
-        <Button title="Registrar" onPress={handleRegister} color={colors.primary} />
+
+        <Button title="Registrar" onPress={handleRegister} />
       </View>
     </ImageBackground>
   );
@@ -281,48 +288,65 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: '#F5F5F5',
+    backgroundColor: colors.background, // Color de fondo
   },
-  title: (colors) => ({
+  title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: colors.text,
-  }),
-  input: (colors) => ({
+    color: colors.primary, // Color del título
+  },
+  input: {
     height: 40,
-    borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 10,
     padding: 10,
-    backgroundColor: colors.secondary,
-    color: colors.text,
-  }),
+    borderRadius: 5,
+    borderColor: colors.primary,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    
+  },
   picker: {
     height: 50,
     width: '100%',
     marginBottom: 10,
+    color: colors.text, // Color del texto del picker
+    borderWidth: 1,
+    padding: 10,
+    borderRadius: 5,
+    borderColor: colors.primary,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   toggleContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
   },
-  toggleLabel: (colors) => ({
+  toggleLabel: {
     marginRight: 10,
-    color: colors.text,
-  }),
-  toggleText: (colors) => ({
+    color: colors.text, // Color de la etiqueta
+  },
+  toggleText: {
     marginLeft: 10,
-    color: colors.text,
-  }),
-  selectedSubjectsTitle: (colors) => ({
+    color: colors.text, // Color del texto
+  },
+  selectedSubjectsTitle: {
     fontSize: 18,
     marginTop: 10,
-    color: colors.text,
-  }),
-  selectedSubject: (colors) => ({
+    color: colors.primary, // Color del título de materias seleccionadas
+  },
+  selectedSubject: {
     fontSize: 16,
-    color: colors.link,
-  }),
+    color: colors.link, // Color de las materias seleccionadas
+  },
 });
