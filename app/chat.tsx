@@ -8,13 +8,21 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { RootStackParamList } from './types';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+};
+
 interface Message {
   id: string;
   remitenteNombre: string;
-  destinatarioNombre: string; // Asegúrate de incluir esto
+  destinatarioNombre: string;
   esImagen: boolean;
   mensaje: string;
-  timestamp: Date; // Agrega esto si planeas usar el timestamp
+  timestamp: Date;
 }
 
 const Chat = () => {
@@ -22,7 +30,7 @@ const Chat = () => {
   const route = useRoute();
   const { tutor, userName } = route.params as { tutor: string; userName: string };
   const [messageText, setMessageText] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]); // Cambia el tipo aquí
+  const [messages, setMessages] = useState<Message[]>([]);
   const [conversationId, setConversationId] = useState('');
 
   useEffect(() => {
@@ -54,7 +62,7 @@ const Chat = () => {
       const messagesList = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
-      })) as Message[]; // Asegúrate de que el tipo sea correcto
+      })) as Message[];
       setMessages(messagesList);
     });
 
@@ -64,7 +72,7 @@ const Chat = () => {
   const sendMessage = async () => {
     if (messageText.trim()) {
       const message: Message = {
-        id: '', // Puedes generar un ID aquí si es necesario
+        id: '',
         remitenteNombre: userName,
         destinatarioNombre: tutor,
         mensaje: messageText,
@@ -95,10 +103,10 @@ const Chat = () => {
       const imageUrl = await getDownloadURL(imageRef);
 
       const message: Message = {
-        id: '', // Genera un ID aquí si es necesario
+        id: '',
         mensaje: imageUrl,
         remitenteNombre: userName,
-        destinatarioNombre: tutor, // Corrige esto
+        destinatarioNombre: tutor,
         timestamp: new Date(),
         esImagen: true,
       };
@@ -132,10 +140,10 @@ const Chat = () => {
           placeholder="Escribe un mensaje"
         />
         <TouchableOpacity style={styles.button} onPress={pickImage}>
-          <Icon name="image" size={20} color="#070707" />
+          <Icon name="image" size={20} color={colors.text} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={sendMessage}>
-          <Icon name="send" size={20} color="#000000" />
+          <Icon name="send" size={20} color={colors.text} />
         </TouchableOpacity>
       </View>
     </View>
@@ -146,7 +154,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: 'white',
+    backgroundColor: colors.background,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -161,21 +169,21 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 8,
   },
-  sentMessage: { // Corrige este estilo
+  sentMessage: {
     backgroundColor: '#DCF8C6',
     alignSelf: 'flex-end',
     padding: 10,
     borderRadius: 8,
     marginVertical: 5,
   },
-  receivedMessage: { // Corrige este estilo
+  receivedMessage: {
     backgroundColor: '#ECECEC',
     alignSelf: 'flex-start',
     padding: 10,
     borderRadius: 8,
     marginVertical: 5,
   },
-  imageMessage: { // Asegúrate de que este estilo esté definido
+  imageMessage: {
     width: 150,
     height: 150,
     borderRadius: 8,
