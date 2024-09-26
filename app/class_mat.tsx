@@ -7,6 +7,15 @@ import { Rating } from 'react-native-ratings';
 import { useDocente } from './DocenteContext';
 import { RootStackParamList } from './types';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 interface Docente {
   nombre: string;
   materia: string;
@@ -19,7 +28,7 @@ interface RouteParams {
 }
 
 const ClassMat = () => {
-  const { setDocente } = useDocente(); // Destructura setDocente
+  const { setDocente } = useDocente();
   const [docentes, setDocentes] = useState<Docente[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const route = useRoute();
@@ -44,10 +53,8 @@ const ClassMat = () => {
           const materias = doc.get('materias') as string[];
           const materiaDocente = materias.includes(materia) ? materia : 'Materia no encontrada';
 
-          console.log("Tutor:",nombre,"Materias:",materias);
-          return { nombre,correo, materia: materiaDocente, calificacion: null };
+          return { nombre, correo, materia: materiaDocente, calificacion: null };
         });
-        
 
         obtenerCalificacionesYActualizarDocentes(docentesList);
       } else {
@@ -91,21 +98,18 @@ const ClassMat = () => {
   };
 
   const onDocenteSeleccionado = useCallback((docente: Docente) => {
-    setDocente(docente); // Actualiza el contexto
-    navigation.navigate('class_tutor',{
+    setDocente(docente);
+    navigation.navigate('class_tutor', {
       nombre: docente.nombre,
       materia: docente.materia,
       correo: docente.correo,
     });
-    console.log("TST1",docente.nombre);
-    console.log("TST2",docente.materia);
-    console.log("TST3",docente.correo);
   }, [navigation]);
 
   return (
     <View style={styles.container}>
       {isLoading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color={colors.primary} />
       ) : docentes.length === 0 ? (
         <Text style={styles.Alone}>No se encontraron docentes disponibles para esta materia.</Text>
       ) : (
@@ -139,7 +143,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#42a5f5',
+    backgroundColor: colors.background,
   },
   card: {
     backgroundColor: '#ffffff',
@@ -149,21 +153,20 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   cardTitle: {
-    color: '#0c0c0c',
+    color: colors.text,
     fontSize: 18,
     fontWeight: 'bold',
   },
   cardSubtitle: {
-    color: '#000000',
+    color: colors.text,
     fontSize: 16,
   },
   Alone: {
     alignItems: 'flex-end',
     padding: 8,
-    gap: 8,
+    color: colors.text,
   },
   ratingContainer: {
-    backgroundColor: '#272938778',
     alignItems: 'center',
     justifyContent: 'center',
     paddingVertical: 10,
