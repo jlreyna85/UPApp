@@ -17,10 +17,21 @@ interface ChatWithParams {
   userName: string;
 }
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 const MsgScreen: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const userData = useUserData();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  
 
   useEffect(() => {
     const loadConversationsForUser = (userName: string) => {
@@ -102,24 +113,27 @@ const MsgScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: colors.background,
     padding: 16,
   },
   messageContainer: {
     padding: 16,
-    backgroundColor: '#ffff',
+    backgroundColor: '#FFFFFF', // Blanco para el contenedor de mensajes
     marginBottom: 8,
     borderRadius: 8,
     elevation: 2,
   },
   userText: {
     fontWeight: 'bold',
+    color: colors.primary, // Color primario para el nombre del usuario
   },
   messageText: {
-    color: '#555',
+    color: colors.text, // Color del texto del mensaje
   },
   timestampText: {
     fontSize: 10,
-    color: '#aaa',
+    color: colors.link, // Color del timestamp
     marginTop: 4,
   },
 });
