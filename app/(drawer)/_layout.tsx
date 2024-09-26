@@ -2,28 +2,27 @@ import { Drawer } from 'expo-router/drawer';
 import React, { useEffect, useState } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Image, Text, StyleSheet, TouchableOpacity, Alert, useColorScheme } from 'react-native';
-import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
-import { useUser } from '../UserContext'; // Asegúrate de la ruta correcta
-import { doc, getDoc } from 'firebase/firestore'; // Firebase Firestore para obtener el documento del usuario
-import { signOut } from 'firebase/auth'; // Importa la función para cerrar sesión
-import { auth, db } from '../../firebaseconfig'; // Asegúrate de que la ruta sea correcta para Firestore y Auth
-import { NavigationProp, useNavigation } from '@react-navigation/native'; // Para manejar la navegación
+import { DrawerContentScrollView } from '@react-navigation/drawer';
+import { useUser } from '../UserContext';
+import { doc, getDoc } from 'firebase/firestore';
+import { signOut } from 'firebase/auth';
+import { auth, db } from '../../firebaseconfig';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList } from '../types';
 
 export default function DrawerLayout() {
-  const [userName, setUserName] = useState<string>(''); // Estado para el nombre del usuario
-  const [userEmail, setUserEmail] = useState<string>(''); // Estado para el correo del usuario
-  const [profileImage, setProfileImage] = useState<string>(''); // Estado para la imagen de perfil
-  const { uid } = useUser(); // Obteniendo UID del contexto del usuario
+  const [userName, setUserName] = useState<string>('');
+  const [userEmail, setUserEmail] = useState<string>('');
+  const [profileImage, setProfileImage] = useState<string>('');
+  const [userRole, setUserRole] = useState<string>(''); 
+  const { uid } = useUser();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  
 
   useEffect(() => {
     const loadUserData = async () => {
       if (uid) {
         try {
-          // Referencias a documentos en ambas colecciones
           const userDocRefUsuarios = doc(db, 'usuarios', uid);
           const userDocRefDocentes = doc(db, 'docentes', uid);
           const [userDocUsuarios, userDocDocentes] = await Promise.all([
@@ -31,31 +30,22 @@ export default function DrawerLayout() {
             getDoc(userDocRefDocentes),
           ]);
 
-          interface UserData {
-            nombre: string,
-            correo: string,
-            profileImage:string,
-            // Agrega otros campos que necesites
-          }
-
           if (userDocUsuarios.exists()) {
-            const userData = userDocUsuarios.data() as UserData;
-            setUserName(userData.nombre || ''); // Establecer el nombre del usuario
+            setUserRole('student'); 
+            const userData = userDocUsuarios.data();
+            setUserName(userData.nombre || '');
             setUserEmail(userData.correo || '');
-            setProfileImage(userData.profileImage || ''); // Obtener URL de la imagen de perfil
+            setProfileImage(userData.profileImage || '');
           } else if (userDocDocentes.exists()) {
-            const userData = userDocDocentes.data() as UserData;
-            setUserName(userData.nombre || ''); // Establecer el nombre del usuario
+            setUserRole('tutor'); 
+            const userData = userDocDocentes.data();
+            setUserName(userData.nombre || '');
             setUserEmail(userData.correo || '');
-            setProfileImage(userData.profileImage || ''); // Obtener URL de la imagen de perfil
-          } else {
-            console.log('No se encontraron datos de usuario.');
+            setProfileImage(userData.profileImage || '');
           }
         } catch (error) {
           console.error('Error al cargar los datos del usuario:', error);
         }
-      } else {
-        console.log('UID no disponible.');
       }
     };
 
@@ -64,9 +54,9 @@ export default function DrawerLayout() {
 
   const handleSignOut = async () => {
     try {
-      await signOut(auth); // Cierra sesión en Firebase
+      await signOut(auth);
       Alert.alert('Sesión cerrada', 'Has cerrado sesión exitosamente.');
-      navigation.navigate('index' as const); // Redirige a la pantalla de inicio de sesión
+      navigation.navigate('index' as const);
     } catch (error) {
       console.error('Error al cerrar sesión:', error);
       Alert.alert('Error', 'No se pudo cerrar la sesión.');
@@ -74,87 +64,72 @@ export default function DrawerLayout() {
   };
 
   const colorScheme = useColorScheme();
-  const headerIconColor = colorScheme === 'dark' ? '#000000' : '#ffffff'; // Negro para light, blanco para dark
+  const headerIconColor = colorScheme === 'dark' ? '#000000' : '#ffffff';
+
+  const routes = [
+    { name: '(tabs)', label: 'Home', icon: 'home-outline' },
+    { name: 'profile', label: 'Perfil', icon: 'person-circle-outline' },
+    { name: 'alumnos', label: 'Alumnos', icon: 'people-outline' },
+    { name: 'asesorias', label: 'Asesorias', icon: 'library-outline' },
+  ];
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Drawer 
+      <Drawer
         drawerContent={(drawerProps) => (
           <DrawerContentScrollView {...drawerProps}>
             <TouchableOpacity style={styles.headerContainer} activeOpacity={0.6}>
               <Image
-                source={profileImage ? { uri: profileImage } : require('@/assets/images/lince.png')} // Usa la URL de la imagen de perfil o la imagen por defecto
+                source={profileImage ? { uri: profileImage } : require('@/assets/images/react-logo.png')}
                 style={styles.headerImage}
               />
               <Text style={styles.headerTitle}>{userName}</Text>
               <Text style={styles.headerSubtitle}>{userEmail}</Text>
             </TouchableOpacity>
 
-            {/* Renderizado de las opciones del menú */}
-            <DrawerItemList {...drawerProps} />
+            {routes.map(route => {
+              const shouldHide = 
+                (userRole === 'tutor' && route.name === 'asesorias') || 
+                (userRole === 'student' && route.name === 'alumnos');
 
-            {/* Opción para cerrar sesión */}
+              console.log(`Route: ${route.name}, Should Hide: ${shouldHide}`);
+
+              return !shouldHide ? (
+                <TouchableOpacity
+                  key={route.name}
+                  style={styles.drawerItem}
+                  onPress={() => drawerProps.navigation.navigate(route.name)}
+                >
+                  <Ionicons name={route.icon} size={20} color="#000" />
+                  <Text style={styles.drawerItemLabel}>{route.label}</Text>
+                </TouchableOpacity>
+              ) : null;
+            })}
+
             <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
               <Text style={styles.signOutText}>Cerrar Sesión</Text>
             </TouchableOpacity>
           </DrawerContentScrollView>
         )}
       >
-        <Drawer.Screen 
-          name="(tabs)" 
-          options={{
-            headerTintColor: headerIconColor,
-            drawerLabel: 'Home', 
-            title: 'Home',
-            drawerIcon: ({ color }) => <Ionicons name="home-outline" size={20} color={color} />
-          }} 
-        />
-        <Drawer.Screen 
-          name="profile" 
-          options={{ 
-            headerTintColor: headerIconColor,
-            drawerLabel: 'Perfil', 
-            title: 'Perfil',
-            drawerIcon: ({ color }) => <Ionicons name="person-circle-outline" size={20} color={color} />
-          }} 
-        />
-        <Drawer.Screen 
-          name="tst" 
-          options={{ 
-            headerTintColor: headerIconColor,
-            drawerLabel: 'TST', 
-            title: 'TST Page',
-            drawerIcon: ({ color }) => <Ionicons name="book-outline" size={20} color={color} />
-          }} 
-        />
-        <Drawer.Screen 
-          name="alumnos" 
-          options={{ 
-            headerTintColor: headerIconColor,
-            drawerLabel: 'Alumnos', 
-            title: 'Alumnos',
-            drawerIcon: ({ color }) => <Ionicons name="people-outline" size={20} color={color} />
-          }} 
-        />
-        <Drawer.Screen 
-          name="asesorias" 
-          options={{ 
-            headerTintColor: headerIconColor,
-            drawerLabel: 'Asesorias', 
-            title: 'Asesorias',
-            drawerIcon: ({ color }) => <Ionicons name="library-outline" size={20} color={color} /> 
-          }} 
-        />
+        {routes.map(route => (
+          <Drawer.Screen
+            key={route.name}
+            name={route.name}
+            options={{
+              headerTintColor: headerIconColor,
+              drawerLabel: route.label,
+              title: route.label,
+              drawerIcon: ({ color }) => <Ionicons name={route.icon} size={20} color={color} />,
+            }}
+          />
+        ))}
       </Drawer>
     </GestureHandlerRootView>
   );
 }
 
 const styles = StyleSheet.create({
-  drawerContent: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-  },
   headerContainer: {
     height: 200,
     justifyContent: 'flex-start',
@@ -177,6 +152,15 @@ const styles = StyleSheet.create({
   headerSubtitle: {
     fontSize: 16,
     color: '#080808',
+  },
+  drawerItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 15,
+  },
+  drawerItemLabel: {
+    marginLeft: 10,
+    fontSize: 16,
   },
   signOutButton: {
     marginTop: 290,
