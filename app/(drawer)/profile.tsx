@@ -7,21 +7,27 @@ import * as ImagePicker from 'expo-image-picker';
 import useUserData from '../useUserData';
 import { useUser } from '../UserContext';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 const ProfileScreen = () => {
   const userData = useUserData();
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
   const { uid } = useUser();
 
   useEffect(() => {
-    if (userData) {
-      if (userData.profileImage) {
-        setProfileImageUrl(userData.profileImage);
-      }
+    if (userData && userData.profileImage) {
+      setProfileImageUrl(userData.profileImage);
     }
   }, [userData]);
 
   if (!userData) {
-    console.log(userData);
     return <Text>Cargando datos...</Text>;
   }
 
@@ -42,7 +48,7 @@ const ProfileScreen = () => {
   };
 
   // Subir imagen a Firebase Storage
-  const handleUploadImage = async (imageUri:string) => {
+  const handleUploadImage = async (imageUri: string) => {
     try {
       const response = await fetch(imageUri);
       const blob = await response.blob();
@@ -53,9 +59,9 @@ const ProfileScreen = () => {
 
       // Actualizar URL de la imagen de perfil en Firestore
       if (uid) {
-      const userDocRef = doc(db, 'usuarios', uid);
-      console.log("soy:", uid);
-      await updateDoc(userDocRef, { profileImage: downloadURL });}
+        const userDocRef = doc(db, 'usuarios', uid);
+        await updateDoc(userDocRef, { profileImage: downloadURL });
+      }
 
       Alert.alert('Foto de perfil actualizada');
     } catch (error) {
@@ -67,7 +73,7 @@ const ProfileScreen = () => {
   return (
     <View style={styles.container}>
       <Image
-        source={profileImageUrl ? { uri: profileImageUrl } : require('@/assets/images/lince.png')} 
+        source={profileImageUrl ? { uri: profileImageUrl } : require('@/assets/images/react-logo.png')}
         style={styles.image}
       />
       <Button title="Subir Foto de Perfil" onPress={handlePickImage} />
@@ -84,7 +90,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#202020',
+    backgroundColor: colors.background, // Usar color de fondo
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -97,14 +103,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    color: '#ffffff',
+    color: colors.primary, // Usar color primario para el texto
     fontWeight: 'bold',
     textAlign: 'left',
     marginVertical: 15,
   },
   value: {
     fontSize: 18,
-    color: '#f1f1f1',
+    color: colors.text, // Usar color de texto
     textAlign: 'left',
     marginBottom: 15,
   },
