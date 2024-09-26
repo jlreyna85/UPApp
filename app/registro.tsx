@@ -5,15 +5,8 @@ import { auth, db } from '../firebaseconfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { RootStackParamList } from './types';
+import palette from '@/constants/PaletteColor';
 
-const colors = {
-  primary: '#4A90E2', // Azul claro
-  secondary: '#A8E6CF', // Verde suave
-  accent: '#FFA726', // Naranja
-  background: '#F5F5F5', // Gris claro
-  text: '#424242', // Gris oscuro
-  link: '#007AFF', // Azul para enlaces
-};
 
 export default function Registro() {
   const [isTutor, setIsTutor] = useState<boolean>(false);
@@ -161,8 +154,8 @@ export default function Registro() {
           <Switch
             value={isTutor}
             onValueChange={handleToggleSwitch}
-            trackColor={{ true: colors.secondary, false: colors.accent }}
-            thumbColor={isTutor ? colors.primary : '#f4f3f4'}
+            trackColor={{ true: palette.secondary, false: palette.accent }}
+            thumbColor={isTutor ? palette.primary : '#f4f3f4'}
           />
           <Text style={styles.toggleText}>{isTutor ? 'Tutor' : 'Estudiante'}</Text>
         </View>
@@ -288,13 +281,13 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     justifyContent: 'center',
-    backgroundColor: colors.background, // Color de fondo
+    backgroundColor: palette.background, // Color de fondo
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
-    color: colors.primary, // Color del título
+    color: palette.primary, // Color del título
   },
   input: {
     height: 40,
@@ -302,7 +295,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 10,
     borderRadius: 5,
-    borderColor: colors.primary,
+    borderColor: palette.primary,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -315,11 +308,11 @@ const styles = StyleSheet.create({
     height: 50,
     width: '100%',
     marginBottom: 10,
-    color: colors.text, // Color del texto del picker
+    color: palette.text, // Color del texto del picker
     borderWidth: 1,
     padding: 10,
     borderRadius: 5,
-    borderColor: colors.primary,
+    borderColor: palette.primary,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -334,19 +327,19 @@ const styles = StyleSheet.create({
   },
   toggleLabel: {
     marginRight: 10,
-    color: colors.text, // Color de la etiqueta
+    color: palette.text, // Color de la etiqueta
   },
   toggleText: {
     marginLeft: 10,
-    color: colors.text, // Color del texto
+    color: palette.text, // Color del texto
   },
   selectedSubjectsTitle: {
     fontSize: 18,
     marginTop: 10,
-    color: colors.primary, // Color del título de materias seleccionadas
+    color: palette.primary, // Color del título de materias seleccionadas
   },
   selectedSubject: {
     fontSize: 16,
-    color: colors.link, // Color de las materias seleccionadas
+    color: palette.link, // Color de las materias seleccionadas
   },
 });
