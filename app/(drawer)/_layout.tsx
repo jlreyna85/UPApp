@@ -10,6 +10,7 @@ import { auth, db } from '../../firebaseconfig';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList } from '../types';
+import pallete from '../../constants/PaletteColor'; // Asegúrate de que la ruta sea correcta
 
 export default function DrawerLayout() {
   const [userName, setUserName] = useState<string>('');
@@ -129,13 +130,14 @@ export default function DrawerLayout() {
   );
 }
 
+// En lugar de usar colores hardcodeados, usa la paleta
 const styles = StyleSheet.create({
   headerContainer: {
     height: 200,
     justifyContent: 'flex-start',
     padding: 15,
     marginTop: -10,
-    backgroundColor: '#02ffd5',
+    backgroundColor: pallete.primary,
   },
   headerImage: {
     width: 120,
@@ -146,12 +148,12 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: '#000000',
+    color: pallete.text,
     paddingTop: 8,
   },
   headerSubtitle: {
     fontSize: 16,
-    color: '#080808',
+    color: pallete.text,
   },
   drawerItem: {
     flexDirection: 'row',
@@ -161,16 +163,17 @@ const styles = StyleSheet.create({
   drawerItemLabel: {
     marginLeft: 10,
     fontSize: 16,
+    color: pallete.text,
   },
   signOutButton: {
     marginTop: 290,
     padding: 15,
-    backgroundColor: '#ad0202c8',
+    backgroundColor: pallete.accent,
     borderRadius: 10,
     alignItems: 'center',
   },
   signOutText: {
-    color: '#fff',
+    color: pallete.background,
     fontSize: 18,
     fontWeight: 'bold',
   },
