@@ -11,6 +11,15 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseconfig';
 import { RootStackParamList } from '@/app/types';
 
+const colors = {
+  primary: '#4A90E2', // Azul claro
+  secondary: '#A8E6CF', // Verde suave
+  accent: '#FFA726', // Naranja
+  background: '#F5F5F5', // Gris claro
+  text: '#424242', // Gris oscuro
+  link: '#007AFF', // Azul para enlaces
+};
+
 interface UserData {
   cuatrimestre: string;
   nombre?: string;
@@ -79,15 +88,15 @@ export default function Dash() {
       resizeMode="cover"
     >
       <ParallaxScrollView 
-        headerBackgroundColor={{ light: '#00CCB1', dark: 'rgb(21,23,24)' }} 
-        headerImage={<Image style={styles.headerImage} source={require('@/assets/images/lince.png')} />}
+        headerBackgroundColor={{ light: colors.primary, dark: 'rgb(21,23,24)' }} 
+        headerImage={<Image style={styles.headerImage} source={require('@/assets/images/react-logo.png')} />}
       >
         <ThemedView style={styles.titleCareer}>
-          <ThemedText type="title">{carrera}</ThemedText>
+          <ThemedText type="title" style={{ color: colors.text }}>{carrera}</ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title">¡Bienvenido, {userName}!</ThemedText>
+          <ThemedText type="title" style={{ color: colors.text }}>¡Bienvenido, {userName}!</ThemedText>
           <HelloWave />
         </ThemedView>
 
@@ -101,7 +110,7 @@ export default function Dash() {
               contentContainerStyle={styles.cardGrid}
             />
           ) : (
-            <ThemedText>No hay cuatrimestres disponibles.</ThemedText>
+            <ThemedText style={{ color: colors.text }}>No hay cuatrimestres disponibles.</ThemedText>
           )}
         </ThemedView>
       </ParallaxScrollView>
@@ -112,12 +121,13 @@ export default function Dash() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
+    padding: 20,
+    backgroundColor: colors.background,
   },
   headerImage: {
-    width: 240,
-    height: 240,
+    width: 100,
+    height: 100,
     borderRadius: 10,
-    marginBottom: 2,
   },
   titleContainer: {
     alignItems: 'center',
@@ -125,6 +135,7 @@ const styles = StyleSheet.create({
   },
   titleCareer: {
     alignItems: 'center',
+    marginTop: 10,
     gap: 8,
   },
   cardGrid: {
