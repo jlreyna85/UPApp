@@ -72,6 +72,7 @@ export default function DrawerLayout() {
     { name: 'profile', label: 'Perfil', icon: 'person-circle-outline' },
     { name: 'alumnos', label: 'Alumnos', icon: 'people-outline' },
     { name: 'asesorias', label: 'Asesorias', icon: 'library-outline' },
+    { name: 'class_add', label: 'Materias', icon: 'library-outline' },
   ];
 
   return (
