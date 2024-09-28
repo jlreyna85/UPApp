@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -8,14 +8,29 @@ import { doc, getDoc } from 'firebase/firestore';
 import { useUser } from './UserContext';
 import { RootStackParamList } from './types';
 import palette from '../constants/PaletteColor';
+import * as Font from 'expo-font';
+import AppLoading from 'expo-app-loading'; // Asegúrate de tener esta dependencia
 
 export default function HomeScreen() {
   const { setUid } = useUser();
   const [email, setEmail] = useState<string>(''); 
   const [password, setPassword] = useState<string>('');
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+  const [fontsLoaded, setFontsLoaded] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      'Montserrat-Bold': require('../assets/fonts/Montserrat/static/Montserrat-Bold.ttf'),
+      'OpenSans-Regular': require('../assets/fonts/Open_Sans/static/OpenSans-Regular.ttf'),
+      'Poppins-SemiBold': require('../assets/fonts/Poppins/Poppins-SemiBold.ttf'),
+    });
+  };
+
+  useEffect(() => {
+    loadFonts().then(() => setFontsLoaded(true));
+  }, []);
+
   const handleLogin = async () => {
     if (email === '' || password === '') {
       Alert.alert('Error', 'Please enter both email and password');
@@ -41,8 +56,7 @@ export default function HomeScreen() {
         userData = userDocUsuarios.data();
       } else if (userDocDocentes.exists()) {
         userData = userDocDocentes.data();
-      }
-      else if (userDocWorkers.exists()) {
+      } else if (userDocWorkers.exists()) {
         userData = userDocWorkers.data(); 
       }
 
@@ -66,17 +80,22 @@ export default function HomeScreen() {
     navigation.navigate('forgot');
   };
 
+  if (!fontsLoaded) {
+    return <AppLoading />;
+  }
+
   return (
     <View style={styles.container(palette)}>
+      <Text style={styles.sentText(palette)}>Bienvenido a</Text>
       <View style={styles.logoContainer}>
-        <Text style={styles.sideText(palette)}>Bienvenido a UP</Text>
+        <Text style={styles.sideText(palette)}>UP</Text>
         <Image
           source={require('../assets/images/lince-600.png')}
           style={styles.logo}
         />
         <Text style={styles.sideText(palette)}>PP</Text>
       </View>
-      
+
       <View style={styles.container2}>
         <TextInput
           style={styles.input(palette)}
@@ -136,6 +155,7 @@ const styles = StyleSheet.create({
   }),
   container2: {
     justifyContent: 'center',
+    paddingVertical:250,
     paddingHorizontal: 50,
   },
   logoContainer: {
@@ -150,11 +170,19 @@ const styles = StyleSheet.create({
     marginBottom: -5,
     tintColor: '#000000',
   },
+  sentText: (palette) => ({
+    fontSize: 52,
+    fontWeight: 'bold',
+    color: palette.text,
+    fontFamily: 'Montserrat-Bold', // Aplica la fuente Montserrat
+    alignSelf: 'center',
+  }),
   sideText: (palette) => ({
     fontSize: 52,
     fontWeight: 'bold',
     color: palette.text,
     marginHorizontal: 10,
+    fontFamily: 'Montserrat-Bold', // Aplica la fuente Montserrat
   }),
   input: (palette) => ({
     height: 50,
@@ -169,6 +197,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
+    fontFamily: 'OpenSans-Regular', // Aplica la fuente Open Sans
   }),
   passwordContainer: (palette) => ({
     flex: 1,
@@ -189,6 +218,7 @@ const styles = StyleSheet.create({
   inputPassword: {
     flex: 1,
     height: 50,
+    fontFamily: 'OpenSans-Regular', // Aplica la fuente Open Sans
   },
   eyeIcon: {
     marginLeft: 10,
@@ -197,6 +227,7 @@ const styles = StyleSheet.create({
     color: palette.link,
     fontWeight: 'bold',
     marginTop: -10,
+    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
   }),
   loginButton: (palette) => ({
     backgroundColor: palette.primary,
@@ -209,6 +240,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
   },
   footerContainer: {
     flexDirection: 'row',
@@ -219,5 +251,6 @@ const styles = StyleSheet.create({
   signupText: (palette) => ({
     color: palette.link,
     fontWeight: 'bold',
+    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
   }),
 });
