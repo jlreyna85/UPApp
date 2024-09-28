@@ -7,6 +7,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { RouteProp, useRoute, useNavigation, NavigationProp } from '@react-navigation/native'; // Importar useNavigation
 import Icon from 'react-native-vector-icons/MaterialIcons'; // Importar el ícono que necesitas
 import { RootStackParamList } from './types';
+import palette from '@/constants/PaletteColor'; // Importar la paleta de colores
 
 interface Message {
   mensaje: string;
@@ -125,13 +126,14 @@ const ChatWith: React.FC = () => {
           value={newMessage}
           onChangeText={setNewMessage}
           placeholder="Escribe un mensaje"
+          placeholderTextColor={palette.text}
         />
         
         <TouchableOpacity style={styles.button} onPress={pickImage}>
-          <Icon name="image" size={20} color="#070707" />
+          <Icon name="image" size={20} color={palette.primary} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={sendMessage}>
-          <Icon name="send" size={20} color="#000000" />
+          <Icon name="send" size={20} color={palette.primary} />
         </TouchableOpacity>
       </View>
     </View>
@@ -147,7 +149,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor:'white',
+    backgroundColor: palette.background,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -156,11 +158,18 @@ const styles = StyleSheet.create({
   },
   input: {
     flex: 1,
-    borderColor: 'gray',
     borderWidth: 1,
     marginRight: 8,
     padding: 8,
     borderRadius: 8,
+    marginBottom: 10,
+    borderColor: palette.primary,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   messageContainer: {
     padding: 16,
@@ -169,15 +178,15 @@ const styles = StyleSheet.create({
     maxWidth: '70%',
   },
   sent: {
-    backgroundColor: '#DCF8C6',
+    backgroundColor: palette.secondary, // Usar el color secundario
     alignSelf: 'flex-end',
   },
   received: {
-    backgroundColor: '#ECECEC',
+    backgroundColor: palette.primary, // Usar el color primario
     alignSelf: 'flex-start',
   },
   messageText: {
-    color: '#555',
+    color: palette.text, // Usar el color de texto
   },
   image: {
     width: 150,

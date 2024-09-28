@@ -3,7 +3,7 @@ import { View, FlatList, TouchableOpacity, StyleSheet, Text } from 'react-native
 import { db } from '../../firebaseconfig';
 import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import useUserData from '../useUserData';
-import CardViewAlumno from '@/components/CardView';
+import CardView from '@/components/CardView';
 
 const Alumnos = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -31,13 +31,13 @@ const Alumnos = () => {
 
   const renderAlumnoCard = ({ item }) => (
     <TouchableOpacity>
-      <CardViewAlumno
+      <CardView
         key={item.id}
         title={item.titulo}
         subtitle={item.descripcion}
         materia={item.materia}
         tutor={item.usuario} // Here `usuario` acts as the tutor
-      />
+        imageUrl={''} usuario={''}      />
     </TouchableOpacity>
   );
 

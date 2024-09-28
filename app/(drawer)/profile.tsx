@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useId } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, Alert, Button } from 'react-native';
 import { db, storage } from '../../firebaseconfig'; // Asegúrate de que la ruta sea correcta
 import { doc, updateDoc } from 'firebase/firestore';
@@ -6,15 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import * as ImagePicker from 'expo-image-picker';
 import useUserData from '../useUserData';
 import { useUser } from '../UserContext';
-
-const colors = {
-  primary: '#4A90E2', // Azul claro
-  secondary: '#A8E6CF', // Verde suave
-  accent: '#FFA726', // Naranja
-  background: '#F5F5F5', // Gris claro
-  text: '#424242', // Gris oscuro
-  link: '#007AFF', // Azul para enlaces
-};
+import palette from '@/constants/PaletteColor';
 
 const ProfileScreen = () => {
   const userData = useUserData();
@@ -77,12 +69,30 @@ const ProfileScreen = () => {
         style={styles.image}
       />
       <Button title="Subir Foto de Perfil" onPress={handlePickImage} />
-      <Text style={styles.label}>Nombre Completo</Text>
-      <Text style={styles.value}>{userData.nombre} {userData.apellido}</Text>
-      <Text style={styles.label}>Correo</Text>
-      <Text style={styles.value}>{userData.correo}</Text>
-      <Text style={styles.label}>Carrera</Text>
-      <Text style={styles.value}>{userData.carrera}</Text>
+      
+      {/* Renderizar solo si userData.nombre y userData.apellido no son null */}
+      {(userData.nombre || userData.apellido) && (
+        <>
+          <Text style={styles.label}>Nombre Completo</Text>
+          <Text style={styles.value}>{userData.nombre} {userData.apellido}</Text>
+        </>
+      )}
+
+      {/* Renderizar solo si userData.correo no es null */}
+      {userData.correo && (
+        <>
+          <Text style={styles.label}>Correo</Text>
+          <Text style={styles.value}>{userData.correo}</Text>
+        </>
+      )}
+
+      {/* Renderizar solo si userData.carrera no es null */}
+      {userData.carrera && (
+        <>
+          <Text style={styles.label}>Carrera</Text>
+          <Text style={styles.value}>{userData.carrera}</Text>
+        </>
+      )}
     </View>
   );
 };
@@ -90,7 +100,7 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background, // Usar color de fondo
+    backgroundColor: palette.background, // Usar color de fondo
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -103,14 +113,14 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 20,
-    color: colors.primary, // Usar color primario para el texto
+    color: palette.primary, // Usar color primario para el texto
     fontWeight: 'bold',
     textAlign: 'left',
     marginVertical: 15,
   },
   value: {
     fontSize: 18,
-    color: colors.text, // Usar color de texto
+    color: palette.text, // Usar color de texto
     textAlign: 'left',
     marginBottom: 15,
   },

@@ -1,17 +1,28 @@
-import React, { createContext, useContext, useState, ReactNode } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebaseconfig'; // Asegúrate de importar tu configuración de Firebase
 
-// Define el tipo para el contexto
 interface UserContextType {
   uid: string | null;
   setUid: (uid: string | null) => void;
 }
 
-// Crea el contexto
 const UserContext = createContext<UserContextType | undefined>(undefined);
 
-// Proveedor del contexto
 export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [uid, setUid] = useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setUid(user.uid); // Si el usuario está autenticado, guarda su UID
+      } else {
+        setUid(null); // Si no hay usuario, establece UID a null
+      }
+    });
+
+    return () => unsubscribe(); // Limpia el listener al desmontar el componente
+  }, []);
 
   return (
     <UserContext.Provider value={{ uid, setUid }}>
@@ -20,7 +31,6 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   );
 };
 
-// Hook para usar el contexto
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {

@@ -5,6 +5,7 @@ import { collection, query, orderBy, onSnapshot } from 'firebase/firestore';
 import useUserData from '../../useUserData';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '@/app/types';
+import palette from '@/constants/PaletteColor';
 
 interface Message {
   user: string;
@@ -16,15 +17,6 @@ interface ChatWithParams {
   receiver: string;
   userName: string;
 }
-
-const colors = {
-  primary: '#4A90E2', // Azul claro
-  secondary: '#A8E6CF', // Verde suave
-  accent: '#FFA726', // Naranja
-  background: '#F5F5F5', // Gris claro
-  text: '#424242', // Gris oscuro
-  link: '#007AFF', // Azul para enlaces
-};
 
 const MsgScreen: React.FC = () => {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -114,7 +106,7 @@ const MsgScreen: React.FC = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.background,
+    backgroundColor: palette.background,
     padding: 16,
   },
   messageContainer: {
@@ -126,14 +118,14 @@ const styles = StyleSheet.create({
   },
   userText: {
     fontWeight: 'bold',
-    color: colors.primary, // Color primario para el nombre del usuario
+    color: palette.primary, // Color primario para el nombre del usuario
   },
   messageText: {
-    color: colors.text, // Color del texto del mensaje
+    color: palette.text, // Color del texto del mensaje
   },
   timestampText: {
     fontSize: 10,
-    color: colors.link, // Color del timestamp
+    color: palette.link, // Color del timestamp
     marginTop: 4,
   },
 });

@@ -26,9 +26,11 @@ export default function DrawerLayout() {
         try {
           const userDocRefUsuarios = doc(db, 'usuarios', uid);
           const userDocRefDocentes = doc(db, 'docentes', uid);
-          const [userDocUsuarios, userDocDocentes] = await Promise.all([
+          const userDocRefWorkers = doc(db, 'workers', uid);
+          const [userDocUsuarios, userDocDocentes, userDocWorkers] = await Promise.all([
             getDoc(userDocRefUsuarios),
             getDoc(userDocRefDocentes),
+            getDoc(userDocRefWorkers),
           ]);
 
           if (userDocUsuarios.exists()) {
@@ -40,6 +42,12 @@ export default function DrawerLayout() {
           } else if (userDocDocentes.exists()) {
             setUserRole('tutor'); 
             const userData = userDocDocentes.data();
+            setUserName(userData.nombre || '');
+            setUserEmail(userData.correo || '');
+            setProfileImage(userData.profileImage || '');
+          } else if (userDocWorkers.exists()) {
+            setUserRole('support'); 
+            const userData = userDocWorkers.data();
             setUserName(userData.nombre || '');
             setUserEmail(userData.correo || '');
             setProfileImage(userData.profileImage || '');
@@ -91,8 +99,8 @@ export default function DrawerLayout() {
 
             {routes.map(route => {
               const shouldHide = 
-                (userRole === 'tutor' && route.name === 'asesorias') || 
-                (userRole === 'student' && route.name === 'alumnos');
+                (userRole === 'tutor' && ['asesorias', 'class_add'].includes(route.name)) ||
+                (userRole === 'student' && ['alumnos', 'class_add'].includes(route.name));
 
               console.log(`Route: ${route.name}, Should Hide: ${shouldHide}`);
 

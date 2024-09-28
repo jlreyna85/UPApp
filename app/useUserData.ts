@@ -15,9 +15,11 @@ const useUserData = () => {
           // Referencias a documentos en ambas colecciones
           const userDocRefUsuarios = doc(db, 'usuarios', uid);
           const userDocRefDocentes = doc(db, 'docentes', uid);
-          const [userDocUsuarios, userDocDocentes] = await Promise.all([
+          const userDocRefWorkers = doc(db, 'workers', uid);
+          const [userDocUsuarios, userDocDocentes, userDocWorkers] = await Promise.all([
             getDoc(userDocRefUsuarios),
             getDoc(userDocRefDocentes),
+            getDoc(userDocRefWorkers),
           ]);
           if (userDocUsuarios.exists()) {
             setUserData(userDocUsuarios.data());
@@ -25,6 +27,10 @@ const useUserData = () => {
             setUserData(userDocDocentes.data());
             console.log('No se encontraron datos de usuario.');
           }
+          else if (userDocWorkers.exists()) {
+            setUserData(userDocWorkers.data());
+          }
+    
         } catch (error) {
           console.error('Error al cargar los datos del usuario:', error);
         }

@@ -28,10 +28,12 @@ export default function HomeScreen() {
 
       const userDocRefUsuarios = doc(db, 'usuarios', uid);
       const userDocRefDocentes = doc(db, 'docentes', uid);
+      const userDocRefWorkers = doc(db, 'workers', uid);
 
-      const [userDocUsuarios, userDocDocentes] = await Promise.all([
+      const [userDocUsuarios, userDocDocentes, userDocWorkers] = await Promise.all([
         getDoc(userDocRefUsuarios),
         getDoc(userDocRefDocentes),
+        getDoc(userDocRefWorkers),
       ]);
 
       let userData: any;
@@ -39,6 +41,9 @@ export default function HomeScreen() {
         userData = userDocUsuarios.data();
       } else if (userDocDocentes.exists()) {
         userData = userDocDocentes.data();
+      }
+      else if (userDocWorkers.exists()) {
+        userData = userDocWorkers.data(); 
       }
 
       if (userData) {
@@ -58,16 +63,20 @@ export default function HomeScreen() {
   };
 
   const handleForgotPasswordPress = () => {
-    navigation.navigate('UserList');
+    navigation.navigate('forgot');
   };
 
   return (
     <View style={styles.container(palette)}>
-      <Image
-        source={{ uri: 'assets/images/react-logo.png' }}
-        style={styles.logo}
-      />
-      <Text style={styles.title(palette)}>Bienvenido a UPApp</Text>
+      <View style={styles.logoContainer}>
+        <Text style={styles.sideText(palette)}>Bienvenido a UP</Text>
+        <Image
+          source={require('../assets/images/lince-600.png')}
+          style={styles.logo}
+        />
+        <Text style={styles.sideText(palette)}>PP</Text>
+      </View>
+      
       <View style={styles.container2}>
         <TextInput
           style={styles.input(palette)}
@@ -129,18 +138,23 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     paddingHorizontal: 50,
   },
-  logo: {
-    width: 100,
-    height: 100,
-    alignSelf: 'center',
-    tintColor: 'black',
+  logoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 0,
   },
-  title: (palette) => ({
-    fontSize: 36,
+  logo: {
+    width: 50,
+    height: 50,
+    marginBottom: -5,
+    tintColor: '#000000',
+  },
+  sideText: (palette) => ({
+    fontSize: 52,
     fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
     color: palette.text,
+    marginHorizontal: 10,
   }),
   input: (palette) => ({
     height: 50,
@@ -157,6 +171,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   }),
   passwordContainer: (palette) => ({
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: palette.primary,

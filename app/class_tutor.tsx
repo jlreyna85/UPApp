@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Button, Image, StyleSheet} from 'react-native';
 import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseconfig';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import useUserData from './useUserData';
 import { useDocente } from './DocenteContext';
 import { RootStackParamList } from './types';
@@ -10,6 +10,11 @@ import { RootStackParamList } from './types';
 interface TutorData {
   nombre: string;
   materias: string[];
+  correo: string;
+}
+interface RouteParams {
+  nombre: string;
+  materia: string;
   correo: string;
 }
 interface ChatParams {
@@ -23,6 +28,9 @@ const ClassTutor = () => {
   const [tutorData, setTutorData] = useState<TutorData | null>(null);
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const route = useRoute();
+  const { materia: setMateria } = route.params as RouteParams;  // Retrieve materia from route
+
   
   useEffect(() => {
     const fetchTutorData = async () => {
@@ -78,7 +86,7 @@ const ClassTutor = () => {
         asesoriasRef,
         where('usuario', '==', userName),
         where('tutor', '==', tutor),
-        where('materia', '==', materia)
+        where('materia', '==', setMateria)
       );
       const querySnapshot = await getDocs(q);
 
@@ -94,7 +102,7 @@ const ClassTutor = () => {
         const asesoria = {
           usuario: userName,
           tutor: tutor,
-          materia: materia,
+          materia: setMateria,
           timestamp: new Date().getTime(),
         };
         await addDoc(asesoriasRef, asesoria);
@@ -112,7 +120,7 @@ const ClassTutor = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('@/assets/images/lince.png')} style={styles.image} />
+      <Image source={require('@/assets/images/react-logo.png')} style={styles.image} />
       {tutorData ? (
         <>
           <Text style={styles.text}>{`Tutor: ${tutorData.nombre}`}</Text>

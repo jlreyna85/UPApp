@@ -10,15 +10,7 @@ import { useUser } from '../../UserContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseconfig';
 import { RootStackParamList } from '@/app/types';
-
-const colors = {
-  primary: '#4A90E2', // Azul claro
-  secondary: '#A8E6CF', // Verde suave
-  accent: '#FFA726', // Naranja
-  background: '#F5F5F5', // Gris claro
-  text: '#424242', // Gris oscuro
-  link: '#007AFF', // Azul para enlaces
-};
+import palette from '@/constants/PaletteColor';
 
 interface UserData {
   cuatrimestre: string;
@@ -82,21 +74,14 @@ export default function Dash() {
   );
 
   return (
-    <ImageBackground
-      source={{ uri: 'assets/images/fondo-textura-papel-blanco.jpg' }}
-      style={styles.background}
-      resizeMode="cover"
-    >
       <ParallaxScrollView 
-        headerBackgroundColor={{ light: colors.primary, dark: 'rgb(21,23,24)' }} 
-        headerImage={<Image style={styles.headerImage} source={require('@/assets/images/react-logo.png')} />}
-      >
+        headerBackgroundColor={{ light: palette.primary, dark: 'rgb(21,23,24)' }}>
         <ThemedView style={styles.titleCareer}>
-          <ThemedText type="title" style={{ color: colors.text }}>{carrera}</ThemedText>
+          <ThemedText type="title" style={{ color: 'white' }}>{carrera}</ThemedText>
         </ThemedView>
 
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title" style={{ color: colors.text }}>¡Bienvenido, {userName}!</ThemedText>
+          <ThemedText type="title" style={{ color: 'white' }}>¡Bienvenido, {userName}!</ThemedText>
           <HelloWave />
         </ThemedView>
 
@@ -110,11 +95,10 @@ export default function Dash() {
               contentContainerStyle={styles.cardGrid}
             />
           ) : (
-            <ThemedText style={{ color: colors.text }}>No hay cuatrimestres disponibles.</ThemedText>
+            <ThemedText style={{ color: palette.text }}>No hay cuatrimestres disponibles.</ThemedText>
           )}
         </ThemedView>
       </ParallaxScrollView>
-    </ImageBackground>
   );
 }
 
@@ -122,12 +106,7 @@ const styles = StyleSheet.create({
   background: {
     flex: 1,
     padding: 20,
-    backgroundColor: colors.background,
-  },
-  headerImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+    backgroundColor: palette.background,
   },
   titleContainer: {
     alignItems: 'center',
