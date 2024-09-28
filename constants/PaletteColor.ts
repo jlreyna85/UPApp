@@ -1,5 +1,5 @@
-// colors.ts
-const colors = {
+// PaletteColor.ts
+const palette = {
   primary: '#4A90E2', // Azul claro
   secondary: '#A8E6CF', // Verde suave
   accent: '#FFA726', // Naranja
@@ -8,4 +8,4 @@ const colors = {
   link: '#007AFF', // Azul para enlaces
 };
 
-export default colors;
+export default palette;
