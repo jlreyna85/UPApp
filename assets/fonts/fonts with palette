@@ -1,3 +1,4 @@
+
 Google fonts
 
 descargar 
@@ -7,3 +8,5 @@ descargar
 
 install
 npm install expo-app-loading
+expo install expo-font (npm)
+npm install react-native-global-font
