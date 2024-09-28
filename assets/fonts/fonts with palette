@@ -4,3 +4,6 @@ descargar
 -Poppins
 -Montserrat
 -Open Sans
+
+install
+npm install expo-app-loading
