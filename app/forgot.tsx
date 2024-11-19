@@ -38,7 +38,7 @@ const PasswordReset: React.FC = () => {
         autoCapitalize="none"
       />
       <TouchableOpacity style={styles.resetButton(palette)} onPress={handlePasswordReset}>
-          <Text style={styles.resetText}>Enviar correo de restablecimiento</Text>
+          <Text style={styles.resetButtonText}>Enviar correo de restablecimiento</Text>
         </TouchableOpacity>
     </View>
   );
@@ -52,9 +52,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
   },
   title: {
-    fontSize: 24,
-    marginBottom: 20,
+    fontSize: 48,
+    fontWeight: 'bold',
+    color: palette.text,
+    fontFamily: 'Montserrat-Bold', 
+    alignSelf: 'center',
     textAlign: 'center',
+    marginTop: 100,
   },
   input: {
     borderWidth: 1,
@@ -82,6 +86,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
+    fontFamily: 'Poppins-SemiBold', 
   },
 });
 

@@ -1,11 +1,14 @@
+import { Platform } from 'react-native';
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert, Switch, Picker, ImageBackground } from 'react-native';
+import { View, Text, TextInput,StyleSheet, Alert, Switch,ImageBackground, TouchableOpacity } from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { auth, db } from '../firebaseconfig';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, collection, getDocs } from 'firebase/firestore';
 import { RootStackParamList } from './types';
-import palette from '@/constants/PaletteColor';
+import { Picker } from '@react-native-picker/picker';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import palette from '../constants/PaletteColor';
 
 
 export default function Registro() {
@@ -20,13 +23,13 @@ export default function Registro() {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [filterCarrera, setFilterCarrera] = useState<string>('');
   const [filterCuatrimestre, setFilterCuatrimestre] = useState<string>('');
-
   const [cuatrimestres, setCuatrimestres] = useState<string[]>([]);
   const [carreras, setCarreras] = useState<string[]>([]);
   const [materias, setMaterias] = useState<string[]>([]);
   const [filteredMaterias, setFilteredMaterias] = useState<string[]>([]);
-
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const isWeb = Platform.OS === 'web';
+  const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
 
   useEffect(() => {
     loadCuatrimestres();
@@ -91,8 +94,7 @@ export default function Registro() {
         apellido: surname,
         correo: email,
         type: isTutor ? 'docente' : 'estudiante',
-      };
-  
+      }
       if (isTutor) {
         userData.materias = selectedSubjects;
         await setDoc(doc(db, 'docentes', user.uid), userData);
@@ -101,9 +103,11 @@ export default function Registro() {
         userData.cuatrimestre = cuatrimestre;
         await setDoc(doc(db, 'usuarios', user.uid), userData);
       }
-  
-      showAlert('Éxito', 'Usuario registrado exitosamente');
-  
+      if (Platform.OS === 'web') {
+        alert('Usuario registrado exitosamente');
+      } else {
+        showAlert('Éxito', 'Usuario registrado exitosamente');
+      }
       setUsername('');
       setPassword('');
       setName('');
@@ -114,13 +118,15 @@ export default function Registro() {
       setFilterCarrera('');
       setFilterCuatrimestre('');
       setSelectedSubjects([]);
-      
       navigation.navigate('index');
     } catch (error) {
-      showAlert('Error', `Error al registrar usuario: ${error.message}`);
+      if (Platform.OS === 'web') {
+        alert(`Error al registrar usuario: ${error.message}`);
+      } else {
+        showAlert('Error', `Error al registrar usuario: ${error.message}`);
+      }
     }
   };
-  
   const showAlert = (title: string, message: string) => {
     Alert.alert(title, message, [{ text: 'OK' }]);
   };
@@ -136,17 +142,13 @@ export default function Registro() {
   const addSubject = (subject: string) => {
     if (!selectedSubjects.includes(subject)) {
       setSelectedSubjects(prev => [...prev, subject]);
+      alert('Ya has seleccionado esta materia.');
     } else {
       showAlert('Error', 'Ya has seleccionado esta materia.');
     }
   };
 
   return (
-    <ImageBackground
-      source={{ uri: 'assets/images/fondo-textura-papel-blanco.jpg' }}
-      style={styles.background}
-      resizeMode="cover"
-    >
       <View style={styles.container}>
         <Text style={styles.title}>Registro</Text>
         <View style={styles.toggleContainer}>
@@ -165,13 +167,26 @@ export default function Registro() {
           value={username}
           onChangeText={setUsername}
         />
+        <View style={styles.passwordContainer(palette)}>
         <TextInput
-          style={styles.input}
+          style={styles.inputPassword}
           placeholder="Contraseña"
-          secureTextEntry
-          value={password}
           onChangeText={setPassword}
+          secureTextEntry={!passwordVisible}
+          type={isWeb && !passwordVisible ? 'password':'text'} // Usa type="password" en la web
+          value={password}
         />
+        <TouchableOpacity
+            onPress={() => setPasswordVisible(!passwordVisible)}
+            style={styles.eyeIcon}
+          >
+            <Icon
+              name={passwordVisible ? 'eye-off' : 'eye'}
+              size={24}
+              color="#888"
+            />
+          </TouchableOpacity>
+          </View>
         <TextInput
           style={styles.input}
           placeholder="Nombre"
@@ -198,10 +213,41 @@ export default function Registro() {
               value={matricula}
               onChangeText={setMatricula}
             />
+            
+            <View>
+      {/* Pickers para la Web */}
+      {Platform.OS === 'web' && (
+        <>
+          <Picker
+            style={styles.pickerWeb}
+            selectedValue={filterCarrera}
+            onValueChange={(itemValue) => setFilterCarrera(itemValue)}
+          >
+            <Picker.Item label="Selecciona Carrera" value="" />
+            {carreras.map((carrera) => (
+              <Picker.Item key={carrera} label={carrera} value={carrera} />
+            ))}
+          </Picker>
 
+          <Picker
+            style={styles.pickerWeb}
+            selectedValue={cuatrimestre}
+            onValueChange={(itemValue) => setCuatrimestre(itemValue)}
+          >
+            <Picker.Item label="Selecciona Cuatrimestre" value="" />
+            {cuatrimestres.map((item) => (
+              <Picker.Item key={item} label={item} value={item} />
+            ))}
+          </Picker>
+        </>
+      )}
+
+      {/* Pickers para Android */}
+      {Platform.OS === 'android' && (
+        <>
+          <View style={styles.pickerAndroid}>
             <Picker
               selectedValue={filterCarrera}
-              style={styles.picker}
               onValueChange={(itemValue) => setFilterCarrera(itemValue)}
             >
               <Picker.Item label="Selecciona Carrera" value="" />
@@ -209,10 +255,11 @@ export default function Registro() {
                 <Picker.Item key={carrera} label={carrera} value={carrera} />
               ))}
             </Picker>
+          </View>
 
+          <View style={styles.pickerAndroid}>
             <Picker
               selectedValue={cuatrimestre}
-              style={styles.picker}
               onValueChange={(itemValue) => setCuatrimestre(itemValue)}
             >
               <Picker.Item label="Selecciona Cuatrimestre" value="" />
@@ -220,14 +267,20 @@ export default function Registro() {
                 <Picker.Item key={item} label={item} value={item} />
               ))}
             </Picker>
+          </View>
+        </>
+      )}
+    </View>
           </>
         )}
-
         {isTutor && (
           <>
-            <Picker
+{/* Pickers para la Web */}
+{Platform.OS === 'web' && (
+        <>
+          <Picker
+              style={styles.pickerWeb}
               selectedValue={filterCarrera}
-              style={styles.picker}
               onValueChange={(itemValue) => {
                 setFilterCarrera(itemValue);
                 setFilterCuatrimestre('');
@@ -240,8 +293,46 @@ export default function Registro() {
             </Picker>
 
             <Picker
+              style={styles.pickerWeb}
               selectedValue=""
-              style={styles.picker}
+              onValueChange={(itemValue) => {
+                if (itemValue) {
+                  addSubject(itemValue);
+                }
+              }}
+            >
+              <Picker.Item label="Selecciona una Materia" value="" />
+              {filteredMaterias.length > 0 ? (
+                filteredMaterias.map((materia) => (
+                  <Picker.Item key={materia} label={materia} value={materia} />
+                ))) 
+                : 
+                (<Picker.Item label="No hay materias disponibles" value="" />)}
+            </Picker>
+        </>
+      )}
+
+{/* Pickers para Android */}
+{Platform.OS === 'android' && (
+  <>
+    <View style={styles.pickerAndroid}>
+          <Picker
+              selectedValue={filterCarrera}
+              onValueChange={(itemValue) => {
+                setFilterCarrera(itemValue);
+                setFilterCuatrimestre('');
+              }}
+            >
+              <Picker.Item label="Filtrar por Carrera" value="" />
+              {carreras.map((carrera) => (
+                <Picker.Item key={carrera} label={carrera} value={carrera} />
+              ))}
+            </Picker>
+          </View>
+
+    <View style={styles.pickerAndroid}>
+          <Picker
+              selectedValue=""
               onValueChange={(itemValue) => {
                 if (itemValue) {
                   addSubject(itemValue);
@@ -257,7 +348,9 @@ export default function Registro() {
                 <Picker.Item label="No hay materias disponibles" value="" />
               )}
             </Picker>
-
+          </View>
+  </>
+)}
             <Text style={styles.selectedSubjectsTitle}>Materias Seleccionadas:</Text>
             {selectedSubjects.map((subject) => (
               <Text key={subject} style={styles.selectedSubject}>
@@ -266,10 +359,11 @@ export default function Registro() {
             ))}
           </>
         )}
-
-        <Button title="Registrar" onPress={handleRegister} />
+        <TouchableOpacity style={styles.registroButton} onPress={handleRegister}>
+          <Text style={styles.registroButtonText}>Registrar</Text>
+        </TouchableOpacity>
       </View>
-    </ImageBackground>
+    
   );
 }
 
@@ -289,12 +383,38 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     color: palette.primary, // Color del título
   },
+  eyeIcon: {
+    marginLeft:-24,
+    justifyContent: 'center',
+  },
+  passwordContainer: (palette) => ({
+    flexDirection: 'row',
+    borderColor: palette.primary,
+    borderWidth: 1,
+    borderRadius: 10,
+    paddingHorizontal: 0,
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 20,
+  }),
+  inputPassword: {
+    flex: 1,
+    height: 40,
+    padding: 10,
+    borderRadius: 10,
+    textAlignVertical: 'center',
+    fontFamily: 'OpenSans-Regular', 
+  },
   input: {
     height: 40,
     borderWidth: 1,
     marginBottom: 10,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     borderColor: palette.primary,
     backgroundColor: '#fff',
     shadowColor: '#000',
@@ -302,15 +422,40 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-    
   },
-  picker: {
-    height: 50,
+  registroButton:{
+    backgroundColor: palette.primary,
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginVertical: 10,
+  },
+  registroButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+    fontFamily: 'Poppins-SemiBold', 
+  },
+  pickerWeb: {
+    height: 40,
     width: '100%',
     marginBottom: 10,
-    color: palette.text, // Color del texto del picker
     borderWidth: 1,
-    padding: 10,
+    borderRadius: 10,
+    borderColor: palette.primary,
+    backgroundColor: '#fff',
+    elevation: 5, // Mejor soporte para Android
+    shadowColor: '#000', // Soporte para iOS
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    paddingHorizontal: 10, // Espaciado interno
+  },
+  pickerAndroid: {
+    height: 50, // Ajustar altura según la plataforma
+    width: '100%',
+    marginBottom: 10,
+    borderWidth: 1,
     borderRadius: 5,
     borderColor: palette.primary,
     backgroundColor: '#fff',
@@ -339,7 +484,7 @@ const styles = StyleSheet.create({
     color: palette.primary, // Color del título de materias seleccionadas
   },
   selectedSubject: {
-    fontSize: 16,
+    fontSize: 12,
     color: palette.link, // Color de las materias seleccionadas
   },
 });

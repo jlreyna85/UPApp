@@ -12,7 +12,7 @@ import palette from '@/constants/PaletteColor'; // Importar la paleta de colores
 interface Message {
   mensaje: string;
   remitenteNombre: string;
-  destinatarioId: string;
+  destinatarioNombre: string;
   timestamp: Date; // Asegúrate que es un objeto Date
   esImagen?: boolean;
 }
@@ -55,7 +55,7 @@ const ChatWith: React.FC = () => {
     const message: Message = {
       mensaje: newMessage,
       remitenteNombre: userName,
-      destinatarioId: receiver,
+      destinatarioNombre: receiver,
       timestamp: new Date(),
     };
 
@@ -90,7 +90,7 @@ const ChatWith: React.FC = () => {
       const message: Message = {
         mensaje: imageUrl,
         remitenteNombre: userName,
-        destinatarioId: receiver,
+        destinatarioNombre: receiver,
         timestamp: new Date(),
         esImagen: true,
       };

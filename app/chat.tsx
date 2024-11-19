@@ -10,7 +10,6 @@ import { RootStackParamList } from './types';
 import palette from '@/constants/PaletteColor';
 
 interface Message {
-  id: string;
   remitenteNombre: string;
   destinatarioNombre: string;
   esImagen: boolean;
@@ -65,7 +64,6 @@ const Chat = () => {
   const sendMessage = async () => {
     if (messageText.trim()) {
       const message: Message = {
-        id: '',
         remitenteNombre: userName,
         destinatarioNombre: tutor,
         mensaje: messageText,
@@ -96,7 +94,6 @@ const Chat = () => {
       const imageUrl = await getDownloadURL(imageRef);
 
       const message: Message = {
-        id: '',
         mensaje: imageUrl,
         remitenteNombre: userName,
         destinatarioNombre: tutor,

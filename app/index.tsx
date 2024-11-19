@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image } from 'react-native';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, Alert, Image, ActivityIndicator, Platform } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { auth, db } from '../firebaseconfig';
@@ -9,7 +9,6 @@ import { useUser } from './UserContext';
 import { RootStackParamList } from './types';
 import palette from '../constants/PaletteColor';
 import * as Font from 'expo-font';
-import AppLoading from 'expo-app-loading'; // Asegúrate de tener esta dependencia
 
 export default function HomeScreen() {
   const { setUid } = useUser();
@@ -18,6 +17,7 @@ export default function HomeScreen() {
   const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
   const [fontsLoaded, setFontsLoaded] = useState(false);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const isWeb = Platform.OS === 'web';
 
   const loadFonts = async () => {
     await Font.loadAsync({
@@ -81,7 +81,11 @@ export default function HomeScreen() {
   };
 
   if (!fontsLoaded) {
-    return <AppLoading />;
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color={palette.primary} />
+      </View>
+    );
   }
 
   return (
@@ -110,9 +114,9 @@ export default function HomeScreen() {
           <TextInput
             style={styles.inputPassword}
             placeholder="Password"
-            value={password}
             onChangeText={setPassword}
-            secureTextEntry={!passwordVisible}
+            secureTextEntry={!passwordVisible} // Utiliza secureTextEntry para móviles
+            type={isWeb && !passwordVisible ? 'password':'text'} // Usa type="password" en la web
             placeholderTextColor="#888"
           />
           <TouchableOpacity
@@ -151,11 +155,11 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     paddingHorizontal: 0,
-    backgroundColor: palette.background,
+    backgroundColor: 'white',
   }),
   container2: {
     justifyContent: 'center',
-    paddingVertical:250,
+    paddingVertical:80,
     paddingHorizontal: 50,
   },
   logoContainer: {
@@ -168,21 +172,21 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     marginBottom: -5,
-    tintColor: '#000000',
+    tintColor: '#A8E6CF',
   },
   sentText: (palette) => ({
-    fontSize: 52,
+    fontSize: 48,
     fontWeight: 'bold',
     color: palette.text,
-    fontFamily: 'Montserrat-Bold', // Aplica la fuente Montserrat
+    fontFamily: 'Montserrat-Bold', 
     alignSelf: 'center',
   }),
   sideText: (palette) => ({
-    fontSize: 52,
+    fontSize: 48,
     fontWeight: 'bold',
     color: palette.text,
-    marginHorizontal: 10,
-    fontFamily: 'Montserrat-Bold', // Aplica la fuente Montserrat
+    marginHorizontal: -7,
+    fontFamily: 'Montserrat-Bold',
   }),
   input: (palette) => ({
     height: 50,
@@ -191,22 +195,21 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'white',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowRadius: 4,
     elevation: 5,
-    fontFamily: 'OpenSans-Regular', // Aplica la fuente Open Sans
+    fontFamily: 'OpenSans-Regular', 
   }),
   passwordContainer: (palette) => ({
-    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: palette.primary,
     borderWidth: 1,
     borderRadius: 10,
-    paddingHorizontal: 15,
+    paddingHorizontal: 0,
     backgroundColor: '#fff',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -218,16 +221,21 @@ const styles = StyleSheet.create({
   inputPassword: {
     flex: 1,
     height: 50,
-    fontFamily: 'OpenSans-Regular', // Aplica la fuente Open Sans
+    padding: 10,
+    borderRadius: 10,
+    textAlignVertical: 'center',
+    fontFamily: 'OpenSans-Regular', 
   },
   eyeIcon: {
-    marginLeft: 10,
+    marginLeft: -24,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   forgotPasswordText: (palette) => ({
     color: palette.link,
     fontWeight: 'bold',
     marginTop: -10,
-    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
+    fontFamily: 'Poppins-SemiBold', 
   }),
   loginButton: (palette) => ({
     backgroundColor: palette.primary,
@@ -240,7 +248,7 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 16,
-    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
+    fontFamily: 'Poppins-SemiBold', 
   },
   footerContainer: {
     flexDirection: 'row',
@@ -251,6 +259,12 @@ const styles = StyleSheet.create({
   signupText: (palette) => ({
     color: palette.link,
     fontWeight: 'bold',
-    fontFamily: 'Poppins-SemiBold', // Aplica la fuente Poppins
+    fontFamily: 'Poppins-SemiBold', 
   }),
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: palette.background,
+  },
 });

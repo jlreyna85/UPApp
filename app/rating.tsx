@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, Button, StyleSheet, Alert } from 'react-native';
+import { ScrollView, View, Text, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { db } from '../firebaseconfig';
 import { collection, addDoc } from 'firebase/firestore'; // Import addDoc and collection
 import { useRoute } from '@react-navigation/native';
 import useUserData from './useUserData';
+import palette from '../constants/PaletteColor';
 
 const FinishQuestions = () => {
     const route = useRoute();
@@ -79,6 +80,7 @@ const FinishQuestions = () => {
                     radioButtons={opciones}
                     onPress={setPuntualidad}
                     selectedId={puntualidad}
+                    containerStyle={styles.radioGroup} // Añade el estilo de alineación
                 />
 
                 <Text style={styles.question}>2.- ¿El tutor fue claro en sus explicaciones?</Text>
@@ -86,6 +88,7 @@ const FinishQuestions = () => {
                     radioButtons={opciones}
                     onPress={setClaridad}
                     selectedId={claridad}
+                    containerStyle={styles.radioGroup} // Añade el estilo de alineación
                 />
 
                 <Text style={styles.question}>3.- ¿Qué tan satisfecho está con estas asesorías?</Text>
@@ -93,6 +96,7 @@ const FinishQuestions = () => {
                     radioButtons={opciones}
                     onPress={setSatisfaccion}
                     selectedId={satisfaccion}
+                    containerStyle={styles.radioGroup} // Añade el estilo de alineación
                 />
 
                 <Text style={styles.question}>4.- ¿Recomendarías al tutor a otros estudiantes?</Text>
@@ -100,9 +104,11 @@ const FinishQuestions = () => {
                     radioButtons={opciones}
                     onPress={setRecomendacion}
                     selectedId={recomendacion}
+                    containerStyle={styles.radioGroup} // Añade el estilo de alineación
                 />
-
-                <Button title="Enviar" onPress={handleSubmit} />
+                <TouchableOpacity style={styles.sendButton} onPress={handleSubmit}>
+                    <Text style={styles.sendButtonText}>Enviar</Text>
+                </TouchableOpacity> 
             </View>
         </ScrollView>
     );
@@ -115,6 +121,19 @@ const styles = StyleSheet.create({
     section: {
         marginBottom: 20,
     },
+    sendButton:{
+        backgroundColor: palette.primary,
+        paddingVertical: 15,
+        borderRadius: 10,
+        alignItems: 'center',
+        marginVertical: 10,
+    },
+    sendButtonText:{
+        color: '#fff',
+        fontWeight: 'bold',
+        fontSize: 16,
+        fontFamily: 'Poppins-SemiBold', 
+    },
     title: {
         fontSize: 20,
         fontWeight: 'bold',
@@ -125,6 +144,9 @@ const styles = StyleSheet.create({
         fontSize: 18,
         color: '#000',
         marginVertical: 10,
+    },
+    radioGroup: {
+        alignItems: 'flex-start', // Alinea los radio buttons hacia la izquierda
     },
 });
 

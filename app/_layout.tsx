@@ -32,20 +32,19 @@ export default function RootLayout() {
     <UserProvider>
     <MessageProvider>
     <DocenteProvider>
-    
     <ThemeProvider value={colorScheme === 'light' ? DarkTheme : DefaultTheme} >
       <Stack>
         <Stack.Screen name="index"options={{headerShown: false, title: 'Home',}}/>
         <Stack.Screen name="homes"options={{headerShown: false}}/>
-        <Stack.Screen name="RegistroScreen" options={{ headerShown: false}} />
+        <Stack.Screen name="registro" options={{ headerShown: false}} />
         <Stack.Screen name="(drawer)" options={{headerShown: false}}/>
-        <Stack.Screen name="class_sistema" options={{headerShown: true, title:"Materias"}}/>
-        <Stack.Screen name="class_mat"options={{headerShown: true, title:"Tutores"}}/>
-        <Stack.Screen name="class_tutor"options={{headerShown: true, title:"Tutor"}}/>
+        <Stack.Screen name="class_sistema" options={{headerShown: false, title:"Materias"}}/>
+        <Stack.Screen name="class_mat"options={{headerShown: false, title:"Tutores"}}/>
+        <Stack.Screen name="class_tutor"options={{headerShown: false, title:"Tutor"}}/>
         <Stack.Screen name="chat"options={{headerShown: true, title:"Mensajes"}}/>
         <Stack.Screen name="chatwith"options={{headerShown: true, title:"Mensajes"}}/>
-        <Stack.Screen name="rating"options={{headerShown: true, title:"Encuesta"}}/>
-
+        <Stack.Screen name="rating"options={{headerShown: false, title:"Encuesta"}}/>
+        <Stack.Screen name="forgot"options={{headerShown: false, title:"Restablecer Contraseña"}}/>
       </Stack>
     </ThemeProvider>
     </DocenteProvider>

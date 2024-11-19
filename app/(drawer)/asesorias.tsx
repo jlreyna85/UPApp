@@ -5,6 +5,7 @@ import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import useUserData from '../useUserData';
 import CardView from '@/components/CardView';
 import { useNavigation } from 'expo-router';
+import palette from '@/constants/PaletteColor';
 
 const Asesorias = () => {
   const [asesorias, setAsesorias] = useState([]);
@@ -70,6 +71,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: palette.background,
   },
   cardGrid: {
     flexDirection: 'column',
@@ -78,7 +80,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   noAsesoriasText: {
-    color: '#000000',
+    color: '#ffffff',
     textAlign: 'center',
   },
 });

@@ -145,13 +145,13 @@ const ClassMat = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    padding: 30,
     backgroundColor: '#42a5f5',
   },
   card: {
     backgroundColor: '#ffffff',
-    padding: 20,
-    marginBottom: 15,
+    padding: 10,
+    marginBottom: 20,
     borderRadius: 10,
     alignItems: 'center',
   },

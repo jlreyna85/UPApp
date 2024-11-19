@@ -19,7 +19,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="dashboard"
         options={{
-          title: 'Dashboard',
+          title: 'Inicio',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon 
             name={focused ? 'home' : 'home-outline'} 
@@ -30,7 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="messages"
         options={{
-          title: 'Messages',
+          title: 'Mensajes',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon 
             name={focused ? 'chatbubble' : 'chatbubble-outline'} 

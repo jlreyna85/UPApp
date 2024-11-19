@@ -4,6 +4,7 @@ import { db } from '../../firebaseconfig';
 import { collection, query, onSnapshot, where } from 'firebase/firestore';
 import useUserData from '../useUserData';
 import CardView from '@/components/CardView';
+import palette from '@/constants/PaletteColor';
 
 const Alumnos = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -36,8 +37,9 @@ const Alumnos = () => {
         title={item.titulo}
         subtitle={item.descripcion}
         materia={item.materia}
-        tutor={item.usuario} // Here `usuario` acts as the tutor
-        imageUrl={''} usuario={''}      />
+        tutor={''}
+        imageUrl={''} 
+        usuario={item.usuario}      />
     </TouchableOpacity>
   );
 
@@ -61,6 +63,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: palette.background,
   },
   cardGrid: {
     flexDirection: 'column',

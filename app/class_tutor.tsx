@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Button, Image, StyleSheet} from 'react-native';
+import { View, Text, Button, Image, StyleSheet } from 'react-native';
 import { collection, getDocs, query, where, addDoc } from 'firebase/firestore';
 import { db } from '../firebaseconfig';
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
@@ -29,16 +29,13 @@ const ClassTutor = () => {
   const [loading, setLoading] = useState(true);
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
-  const { materia: setMateria } = route.params as RouteParams;  // Retrieve materia from route
+  const { materia } = route.params as RouteParams;
 
-  
   useEffect(() => {
     const fetchTutorData = async () => {
       if (!docente) {
-        console.log("soy el tutor:", docente)
         console.log("No hay docente seleccionado");
-        navigation.goBack();
-        return;
+        return; // Cambié esta línea para no navegar atrás si no hay docente
       }
 
       const { nombre } = docente;
@@ -74,42 +71,35 @@ const ClassTutor = () => {
       return;
     }
 
-    const userName = userData.nombre; // Asegúrate de que tienes el nombre de usuario en userData
-    console.log("soy ",userName);
+    const userName = userData.nombre;
     const tutor = tutorData.nombre;
-    const materia = tutorData.materias.join(', ') || "No disponible"; // Usar una materia del tutor
 
     try {
-      // Verificar si ya existe una asesoría
       const asesoriasRef = collection(db, 'asesorias');
       const q = query(
         asesoriasRef,
         where('usuario', '==', userName),
         where('tutor', '==', tutor),
-        where('materia', '==', setMateria)
+        where('materia', '==', materia) // Usa la materia directamente de los parámetros
       );
       const querySnapshot = await getDocs(q);
 
-      navigation.navigate('chat',{tutor, userName} as ChatParams);
-      console.log("Vamos a chat con:", tutor,"y",userName)
+      navigation.navigate('chat', { tutor, userName } as ChatParams);
+      console.log("Vamos a chat con:", tutor, "y", userName);
 
       if (!querySnapshot.empty) {
-        console.log(`Asesoría ya registrada para ${userName} con ${tutor} en ${materia}`);
-        alert(`Asesoría ya registrada para ${userName} con ${tutor} en ${materia}`)
-        
+        console.log(`Asesoría ya registrada para ${userName} con ${tutor}`);
+        alert(`Asesoría ya registrada para ${userName} con ${tutor}`);
       } else {
-        // No existe una asesoría, proceder a guardar
         const asesoria = {
           usuario: userName,
           tutor: tutor,
-          materia: setMateria,
+          materia: materia, // Usa la materia directamente
           timestamp: new Date().getTime(),
         };
         await addDoc(asesoriasRef, asesoria);
-        
       }
     } catch (error) {
-      
       console.error('Error al registrar asesoría:', error);
     }
   };

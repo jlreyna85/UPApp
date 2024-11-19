@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, ListRenderItem, TouchableOpacity, Image, ImageBackground } from 'react-native';
+import { StyleSheet, FlatList, ListRenderItem, TouchableOpacity} from 'react-native';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { HelloWave } from '@/components/HelloWave';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
@@ -11,6 +11,7 @@ import { doc, getDoc } from 'firebase/firestore';
 import { db } from '../../../firebaseconfig';
 import { RootStackParamList } from '@/app/types';
 import palette from '@/constants/PaletteColor';
+import * as Font from 'expo-font';
 
 interface UserData {
   cuatrimestre: string;
@@ -24,6 +25,15 @@ export default function Dash() {
   const [userName, setUserName] = useState<string>('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { uid } = useUser();
+
+
+  const loadFonts = async () => {
+    await Font.loadAsync({
+      'Montserrat-Bold': require('../../../assets/fonts/Montserrat/static/Montserrat-Bold.ttf'),
+      'OpenSans-Regular': require('../../../assets/fonts/Open_Sans/static/OpenSans-Regular.ttf'),
+      'Poppins-SemiBold': require('../../../assets/fonts/Poppins/Poppins-SemiBold.ttf'),
+    });
+  };
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -69,19 +79,16 @@ export default function Dash() {
 
   const renderCuatrimestreCard: ListRenderItem<number> = ({ item }) => (
     <TouchableOpacity onPress={() => handleCardPress(item)}>
-      <CardView key={item} title={`${item}er Cuatrimestre`} subtitle={''} imageUrl={''} />
+      <CardView key={item} title={`${item}er Cuatrimestre`} subtitle={''} materia={''} tutor={''} usuario={''}/>
     </TouchableOpacity>
   );
 
   return (
       <ParallaxScrollView 
-        headerBackgroundColor={{ light: palette.primary, dark: 'rgb(21,23,24)' }}>
-        <ThemedView style={styles.titleCareer}>
-          <ThemedText type="title" style={{ color: 'white' }}>{carrera}</ThemedText>
-        </ThemedView>
-
+        headerBackgroundColor={{ light: palette.primary, dark: '#424242' }}>
         <ThemedView style={styles.titleContainer}>
-          <ThemedText type="title" style={{ color: 'white' }}>¡Bienvenido, {userName}!</ThemedText>
+          <ThemedText type="title" style={{ color: '#4A90E2', fontSize:28,  }}>¡Bienvenido,{userName}!</ThemedText>
+          <ThemedText type="title" style={{ color: '#4A90E2', fontSize:22,  }}>{carrera}!</ThemedText>
           <HelloWave />
         </ThemedView>
 
@@ -105,17 +112,16 @@ export default function Dash() {
 const styles = StyleSheet.create({
   background: {
     flex: 1,
-    padding: 20,
+    padding: 0,
     backgroundColor: palette.background,
   },
   titleContainer: {
     alignItems: 'center',
-    gap: 10,
   },
   titleCareer: {
     alignItems: 'center',
     marginTop: 10,
-    gap: 8,
+    gap: 0,
   },
   cardGrid: {
     flexDirection: 'column',

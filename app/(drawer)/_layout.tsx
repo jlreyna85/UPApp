@@ -73,10 +73,10 @@ export default function DrawerLayout() {
   };
 
   const colorScheme = useColorScheme();
-  const headerIconColor = colorScheme === 'dark' ? '#000000' : '#ffffff';
+  const headerIconColor = colorScheme === 'light' ? pallete.primary : pallete.secondary;
 
   const routes = [
-    { name: '(tabs)', label: 'Home', icon: 'home-outline' },
+    { name: '(tabs)', label: 'Inicio', icon: 'home-outline' },
     { name: 'profile', label: 'Perfil', icon: 'person-circle-outline' },
     { name: 'alumnos', label: 'Alumnos', icon: 'people-outline' },
     { name: 'asesorias', label: 'Asesorias', icon: 'library-outline' },
@@ -90,7 +90,7 @@ export default function DrawerLayout() {
           <DrawerContentScrollView {...drawerProps}>
             <TouchableOpacity style={styles.headerContainer} activeOpacity={0.6}>
               <Image
-                source={profileImage ? { uri: profileImage } : require('@/assets/images/react-logo.png')}
+                source={profileImage ? { uri: profileImage } : require('@/assets/images/lince-600.png')}
                 style={styles.headerImage}
               />
               <Text style={styles.headerTitle}>{userName}</Text>
@@ -110,7 +110,7 @@ export default function DrawerLayout() {
                   style={styles.drawerItem}
                   onPress={() => drawerProps.navigation.navigate(route.name)}
                 >
-                  <Ionicons name={route.icon} size={20} color="#000" />
+                  <Ionicons name={route.icon} size={30} color="#4A90E2" />
                   <Text style={styles.drawerItemLabel}>{route.label}</Text>
                 </TouchableOpacity>
               ) : null;
@@ -130,7 +130,7 @@ export default function DrawerLayout() {
               headerTintColor: headerIconColor,
               drawerLabel: route.label,
               title: route.label,
-              drawerIcon: ({ color }) => <Ionicons name={route.icon} size={20} color={color} />,
+              drawerIcon: ({ color }) => <Ionicons name={route.icon} size={40} color={color} />,
             }}
           />
         ))}
@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     padding: 15,
+    color:'blue',
   },
   drawerItemLabel: {
     marginLeft: 10,
@@ -175,10 +176,10 @@ const styles = StyleSheet.create({
     color: pallete.text,
   },
   signOutButton: {
-    marginTop: 290,
+    marginTop:259,
     padding: 15,
     backgroundColor: pallete.accent,
-    borderRadius: 10,
+    borderRadius: 2,
     alignItems: 'center',
   },
   signOutText: {

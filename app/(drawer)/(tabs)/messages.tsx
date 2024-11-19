@@ -23,57 +23,60 @@ const MsgScreen: React.FC = () => {
   const userData = useUserData();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  
-
   useEffect(() => {
+    if (!userData?.nombre) return;
+    console.log("userdata", userData?.nombre);
+
     const loadConversationsForUser = (userName: string) => {
+      console.log("load for: ", userName)
       const messagesRef = collection(db, 'mensajes');
-  
+      const lastMessagesMap: Record<string, Message> = {};
+
       const unsubscribe = onSnapshot(messagesRef, (snapshot) => {
-        const lastMessagesMap: Record<string, Message> = {};
-  
         snapshot.docs.forEach((doc) => {
           const conversationId = doc.id;
+          console.log("conversacion: ",conversationId);
           const conversationRef = collection(messagesRef, conversationId, 'conversacion');
-  
           const allMessagesQuery = query(conversationRef, orderBy('timestamp'));
-          const unsubscribeMessages = onSnapshot(allMessagesQuery, (allMessagesSnapshot) => {
+
+
+          onSnapshot(allMessagesQuery, (allMessagesSnapshot) => {
             allMessagesSnapshot.docs.forEach(doc => {
               const messageData = doc.data();
               const sender = messageData.remitenteNombre;
-              const recipient = messageData.destinatarioId;
-  
+              const recipient = messageData.destinatarioNombre;
+
+          console.log("message: ", messageData);    
+          console.log("sender:", sender, "recipient:", recipient, "userName:", userName);
+
+
               // Filtrar mensajes relevantes
-              if (sender === userName || recipient === userName) {
+              if (sender &&(recipient || sender === userName ) ) {
                 const message: Message = {
                   user: sender === userName ? recipient : sender,
                   message: messageData.mensaje || '[Imagen]',
                   timestamp: messageData.timestamp.toDate(),
                 };
-  
+                
+
+                // Actualizar último mensaje por usuario
                 if (!lastMessagesMap[message.user] || message.timestamp > lastMessagesMap[message.user].timestamp) {
                   lastMessagesMap[message.user] = message;
                 }
               }
             });
-  
-            const sortedMessages = Object.values(lastMessagesMap).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
-            setMessages(sortedMessages);
-            console.log("sort",sortedMessages);
-            console.log("last",lastMessagesMap);
-            
+
+            // Actualizar lista de mensajes en el estado
+            setMessages(Object.values(lastMessagesMap).sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime()));
           });
-  
-          return () => unsubscribeMessages(); // Limpia la suscripción a los mensajes
         });
       });
-  
-      return () => unsubscribe(); // Limpia la suscripción principal
+
+      return unsubscribe; // Limpia la suscripción
     };
-  
-    if (userData?.nombre) {
-      loadConversationsForUser(userData.nombre);
-    }
+
+    const unsubscribe = loadConversationsForUser(userData.nombre);
+    return () => unsubscribe && unsubscribe();
   }, [userData]);
 
   const handlePress = useCallback((message: Message) => {
@@ -111,21 +114,21 @@ const styles = StyleSheet.create({
   },
   messageContainer: {
     padding: 16,
-    backgroundColor: '#FFFFFF', // Blanco para el contenedor de mensajes
+    backgroundColor: '#FFFFFF',
     marginBottom: 8,
     borderRadius: 8,
     elevation: 2,
   },
   userText: {
     fontWeight: 'bold',
-    color: palette.primary, // Color primario para el nombre del usuario
+    color: palette.primary,
   },
   messageText: {
-    color: palette.text, // Color del texto del mensaje
+    color: palette.text,
   },
   timestampText: {
     fontSize: 10,
-    color: palette.link, // Color del timestamp
+    color: palette.link,
     marginTop: 4,
   },
 });
