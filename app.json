@@ -1,10 +1,10 @@
 {
   "expo": {
-    "name": "MiTu",
+    "name": "UPApp",
     "slug": "MiTu",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/react-logo.png",
+    "icon": "./assets/images/lince-600.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -22,7 +22,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/react-logo@2x.png",
+        "foregroundImage": "./assets/images/lince-600.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.firg28.MiTu",
@@ -34,7 +34,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/react-logo@3x.png"
+      "favicon": "./assets/images/lince-600.png"
     },
     "plugins": [
       "expo-router"
