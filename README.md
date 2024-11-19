@@ -1,9 +1,3 @@
 Bienvenido a nuestro repositorio de la app MiTu "Upapp"
 
-Version Web(Desktop)
-![image](https://github.com/user-attachments/assets/2f53dcec-dfc3-4a2f-a2e7-c090bf96118e)
-
-Version Web(Mobile)
-
-![image](https://github.com/user-attachments/assets/cd53497b-93e8-4491-93ea-48262d3d6aff)
-
+![mitu](https://github.com/user-attachments/assets/ac1cd842-729d-4a12-9bb4-082d9f00115a)
