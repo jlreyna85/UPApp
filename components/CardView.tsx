@@ -4,7 +4,6 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 interface CardViewProps {
   title: string;
   subtitle: string;
-  imageUrl: string;
   materia: string;
   tutor: string;
   usuario: string;
@@ -25,27 +24,20 @@ const CardView: React.FC<CardViewProps> = ({ title, materia, tutor, usuario}) =>
 
 const styles = StyleSheet.create({
   card: {
-    width: 350,  // Ajusta según el tamaño que prefieras
+    width: 280,  // Ajusta según el tamaño que prefieras
     height: 100,  // Ajuste de altura basado en el contenido
     margin: 10,
-    backgroundColor: 'skyblue',
+    backgroundColor: '#4A90E2',
     justifyContent: 'center',
-    alignItems: 'center',
     borderRadius: 8,
     elevation: 8,
   },
-  image: {
-    width: '100%',
-    height: 100,  // Ajusta el tamaño de la imagen
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8,
-  },
   content: {
-    padding: 10,
+    padding: 0,
     alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#ffffff',
     textAlign: 'center',
