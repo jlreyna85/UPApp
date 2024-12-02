@@ -37,6 +37,7 @@
       "favicon": "./assets/images/lince-600.png"
     },
     "plugins": [
+<<<<<<< HEAD
       "expo-router",
       [
         "expo-screen-orientation",
@@ -44,6 +45,9 @@
           "initialOrientation": "DEFAULT"
         }
       ]
+=======
+      "expo-router"
+>>>>>>> 710010d346bc48bb2cae98df00d5a56031624116
     ],
     "experiments": {
       "typedRoutes": true

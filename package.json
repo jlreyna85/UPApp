@@ -31,7 +31,10 @@
     "expo-image-picker": "~15.0.7",
     "expo-linking": "~6.3.1",
     "expo-router": "~3.5.23",
+<<<<<<< HEAD
     "expo-screen-orientation": "~7.0.5",
+=======
+>>>>>>> 710010d346bc48bb2cae98df00d5a56031624116
     "expo-splash-screen": "~0.27.5",
     "expo-status-bar": "~1.12.1",
     "expo-system-ui": "~3.0.7",
