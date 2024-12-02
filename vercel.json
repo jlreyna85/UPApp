@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "buildCommand": "expo export -p web",
     "outputDirectory": "dist",
@@ -11,4 +12,19 @@
       }
     ]
   }
+=======
+{
+    "buildCommand": "expo export -p web",
+    "outputDirectory": "dist",
+    "devCommand": "expo",
+    "cleanUrls": true,
+    "framework": null,
+    "rewrites": [
+      {
+        "source": "/:path*",
+        "destination": "/"
+      }
+    ]
+  }
+>>>>>>> 710010d346bc48bb2cae98df00d5a56031624116
   
