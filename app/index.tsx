@@ -61,14 +61,14 @@ export default function HomeScreen() {
       }
 
       if (userData) {
-        Alert.alert('Login Successful', `Welcome, ${userData?.nombre || email}`);
+        Alert.alert('Inicio de Sesion Exitoso', `Bienvenido, ${userData?.nombre || email}`);
         setUid(user.uid);
         navigation.navigate('(drawer)', { uid });
       } else {
-        Alert.alert('Error', 'User data not found');
+        Alert.alert('Error', 'No se encontro el usuario');
       }
     } catch (error) {
-      Alert.alert('Login Error', 'Incorrect credentials. Please try again.');
+      Alert.alert('Login Error', 'Credenciales Incorrectas. Por favor intente de nuevo.');
     }
   };
 

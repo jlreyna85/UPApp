@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
   cardGrid: {
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     gap: 8,
   },
   noAlumnosText: {

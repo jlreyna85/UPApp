@@ -6,11 +6,22 @@ import useUserData from '../useUserData';
 import CardView from '@/components/CardView';
 import { useNavigation } from 'expo-router';
 import palette from '@/constants/PaletteColor';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 const Asesorias = () => {
   const [asesorias, setAsesorias] = useState([]);
   const userData = useUserData();
   const navigation = useNavigation(); // Inicializar navegación
+  
+  useEffect(() => {
+    // Bloquear orientación vertical al montar
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+
+    return () => {
+      // Asegurar restauración global (si es necesario)
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    };
+  }, []);
 
   useEffect(() => {
     if (userData?.nombre) {

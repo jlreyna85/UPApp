@@ -11,6 +11,7 @@ interface TutorData {
   nombre: string;
   materias: string[];
   correo: string;
+  usimage: string;
 }
 interface RouteParams {
   nombre: string;
@@ -30,6 +31,13 @@ const ClassTutor = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const route = useRoute();
   const { materia } = route.params as RouteParams;
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (tutorData && tutorData.usimage) {
+      setProfileImageUrl(tutorData.usimage);
+    }
+  }, [tutorData]);
 
   useEffect(() => {
     const fetchTutorData = async () => {
@@ -51,6 +59,7 @@ const ClassTutor = () => {
             nombre: tutorDoc.nombre,
             materias: tutorDoc.materias || [],
             correo: tutorDoc.correo,
+            usimage: tutorDoc.profileImage
           });
         } else {
           console.log(`No se encontraron datos para el tutor: ${nombre}`);
@@ -110,9 +119,11 @@ const ClassTutor = () => {
 
   return (
     <View style={styles.container}>
-      <Image source={require('@/assets/images/react-logo.png')} style={styles.image} />
       {tutorData ? (
         <>
+          <Image
+                source={profileImageUrl ? { uri: profileImageUrl } :require('../assets/images/lince-600.png')}
+                style={styles.image}/>
           <Text style={styles.text}>{`Tutor: ${tutorData.nombre}`}</Text>
           <Text style={styles.text}>{`Materias: ${tutorData.materias.join(', ')}`}</Text>
           <Text style={styles.text}>{`Correo: ${tutorData.correo}`}</Text>
@@ -134,9 +145,10 @@ const styles = StyleSheet.create({
     padding: 16,
   },
   image: {
-    width: 240,
-    height: 240,
+    width: 150,
+    height: 150,
     marginBottom: 20,
+    borderRadius: 100,
   },
   text: {
     color: '#FDFDFD',

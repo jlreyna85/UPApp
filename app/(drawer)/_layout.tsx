@@ -7,18 +7,20 @@ import { useUser } from '../UserContext';
 import { doc, getDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
 import { auth, db } from '../../firebaseconfig';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useNavigation, useNavigationState } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { RootStackParamList } from '../types';
 import pallete from '../../constants/PaletteColor'; // Asegúrate de que la ruta sea correcta
+
 
 export default function DrawerLayout() {
   const [userName, setUserName] = useState<string>('');
   const [userEmail, setUserEmail] = useState<string>('');
   const [profileImage, setProfileImage] = useState<string>('');
-  const [userRole, setUserRole] = useState<string>(''); 
+  const [userRole, setUserRole] = useState<string>('');
   const { uid } = useUser();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
 
   useEffect(() => {
     const loadUserData = async () => {

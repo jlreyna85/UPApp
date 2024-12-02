@@ -1,17 +1,19 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, FlatList, ActivityIndicator, Image } from 'react-native';
 import { NavigationProp, useNavigation, useRoute } from '@react-navigation/native';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { db } from '../firebaseconfig';
 import { Rating } from 'react-native-ratings';
 import { useDocente } from './DocenteContext';
 import { RootStackParamList } from './types';
+import useUserData from './useUserData';
 
 interface Docente {
   nombre: string;
   materia: string;
   correo: string;
   calificacion: number | null;
+  usimage: string;
 }
 
 interface RouteParams {
@@ -25,6 +27,14 @@ const ClassMat = () => {
   const route = useRoute();
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { materiaSeleccionada = '' } = route.params as RouteParams || {};
+  const userData = useUserData();
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (docentes && docentes.usimage) {
+      setProfileImageUrl(docentes.usimage);
+    }
+  }, [docentes]);
 
   useEffect(() => {
     console.log('Materia seleccionada:', materiaSeleccionada); // Log de materia seleccionada
@@ -32,6 +42,11 @@ const ClassMat = () => {
       cargarDatosDocentes(materiaSeleccionada);
     }
   }, [materiaSeleccionada]);
+  useEffect(() => {
+    if (userData && userData.profileImage) {
+      setProfileImageUrl(userData.profileImage);
+    }
+  },[userData]);
 
   const cargarDatosDocentes = async (materia: string) => {
     try {
@@ -125,6 +140,13 @@ const ClassMat = () => {
               onPress={() => onDocenteSeleccionado(item)}
               accessibilityLabel={`Seleccionar docente ${item.nombre}`}
             >
+              <View style={styles.innerContainer}>
+              <View>
+                <Image
+                source={require('../assets/images/lince-600.png')}
+                style={styles.userImage}/>
+              </View>
+              <View>
               <Text style={styles.cardTitle}>Tutor: {item.nombre}</Text>
               <Text style={styles.cardSubtitle}>Materia: {item.materia}</Text>
               <Rating
@@ -132,8 +154,9 @@ const ClassMat = () => {
                 imageSize={20}
                 readonly
                 startingValue={item.calificacion ?? 0} // Usa 0 como valor por defecto
-                style={styles.ratingContainer}
-              />
+                style={styles.ratingContainer}/>
+              </View>
+              </View>  
             </TouchableOpacity>
           )}
         />
@@ -148,21 +171,35 @@ const styles = StyleSheet.create({
     padding: 30,
     backgroundColor: '#42a5f5',
   },
+  innerContainer: {
+    flexDirection: 'row', // Distribuir en fila
+    alignItems: 'center',
+    justifyContent: 'space-between', // Separar elementos
+  },
   card: {
     backgroundColor: '#ffffff',
     padding: 10,
     marginBottom: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: 'flex-start',
   },
   cardTitle: {
     color: '#0c0c0c',
     fontSize: 18,
     fontWeight: 'bold',
+    paddingHorizontal: 10,
   },
   cardSubtitle: {
     color: '#000000',
     fontSize: 16,
+    paddingHorizontal: 10,
+  },
+  userImage: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    alignSelf: 'flex-start',
+    borderRadius: 100,
   },
   Alone: {
     alignItems: 'flex-end',
@@ -171,9 +208,10 @@ const styles = StyleSheet.create({
   },
   ratingContainer: {
     backgroundColor: '#05081a778',
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
     paddingVertical: 10,
+    paddingHorizontal: 10,
   },
 });
 

@@ -12,6 +12,7 @@ import { db } from '../../../firebaseconfig';
 import { RootStackParamList } from '@/app/types';
 import palette from '@/constants/PaletteColor';
 import * as Font from 'expo-font';
+import * as ScreenOrientation from 'expo-screen-orientation';
 
 interface UserData {
   cuatrimestre: string;
@@ -25,6 +26,16 @@ export default function Dash() {
   const [userName, setUserName] = useState<string>('');
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const { uid } = useUser();
+
+  useEffect(() => {
+    // Bloquear orientación vertical al montar
+    ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+
+    return () => {
+      // Asegurar restauración global (si es necesario)
+      ScreenOrientation.lockAsync(ScreenOrientation.OrientationLock.PORTRAIT);
+    };
+  }, []);
 
 
   const loadFonts = async () => {
@@ -88,7 +99,7 @@ export default function Dash() {
         headerBackgroundColor={{ light: palette.primary, dark: '#424242' }}>
         <ThemedView style={styles.titleContainer}>
           <ThemedText type="title" style={{ color: '#4A90E2', fontSize:28,  }}>¡Bienvenido,{userName}!</ThemedText>
-          <ThemedText type="title" style={{ color: '#4A90E2', fontSize:22,  }}>{carrera}!</ThemedText>
+          {carrera && (<ThemedText type="title" style={{ color: '#4A90E2', fontSize: 22 }}>{carrera}!</ThemedText>)}
           <HelloWave />
         </ThemedView>
 
